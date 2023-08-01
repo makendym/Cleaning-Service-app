@@ -360,7 +360,7 @@ export default function Hello() {
           }}
         >
           <img
-            src={profile}
+            src={cleaningSink}
             alt="profile"
             style={{
               maxWidth: "100%",
@@ -588,7 +588,7 @@ export default function Hello() {
       <Box>
         {loading && "Loading..."}
         {error && "Error (check console logs)"}
-        {!loading && !error && data?.hello}
+        {!loading && !error}
       </Box>
     </ThemeProvider>
   );

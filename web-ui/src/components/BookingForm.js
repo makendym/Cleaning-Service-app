@@ -26,7 +26,8 @@ import { useMutation } from "@apollo/client";
 import { CREATE_BOOKING_MUTATION } from "../graphql";
 import { OutlinedInput, Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { makeStyles } from "@mui/styles";
+import { makeStyles } from '@mui/styles';
+
 const defaultTheme = createTheme();
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
