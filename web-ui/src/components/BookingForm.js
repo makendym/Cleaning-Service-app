@@ -13,25 +13,14 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState } from "react";
-import InputMask from "react-input-mask";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useMutation } from "@apollo/client";
 import { CREATE_BOOKING_MUTATION } from "../graphql";
-import { OutlinedInput, Stack, Chip } from "@mui/material";
+import {sStack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { makeStyles } from "@mui/styles";
-import BookDrivingSlot from "../components/calendar/BookingSlot";
-import moment from "moment";
-import ReactTimeslotCalendar from "react-timeslot-calendar";
-import { ScheduleMeeting } from "react-schedule-meeting";
-import DayTimePicker from "@mooncake-dev/react-day-time-picker";
 import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
@@ -241,14 +230,10 @@ export default function BookingForm() {
       setNotes("");
 
       setBookingSubmitted(true);
-    } catch (error) {
-      console.error("Error creating booking:", error);
+    } catch (e) {
+      console.error("Error creating booking:", e);
     }
   };
-
-  // const handleDateChange = (date) => {
-  //   setDate(date);
-  // };
 
   // Define your custom theme
   const theme = createTheme({
@@ -317,8 +302,8 @@ export default function BookingForm() {
   };
 
   // Replace this function with your logic to generate time slots
-  const generateTimeSlots = (date) => {
-    const dayOfWeek = date.day(); // Get the day of the week (0 for Sunday, 1 for Monday, ...)
+  const generateTimeSlots = (dates) => {
+    const dayOfWeek = dates.day(); // Get the day of the week (0 for Sunday, 1 for Monday, ...)
 
     // Define time slots for each day of the week
     const dayTimeSlots = [
@@ -334,8 +319,8 @@ export default function BookingForm() {
     return dayTimeSlots[dayOfWeek];
   };
 
-  const handleStartTimeChange = (startTime) => {
-    setStartTime(startTime);
+  const handleStartTimeChange = (time) => {
+    setStartTime(time);
     const selectedDateTime = date.format("MMM DD, YYYY") + " " + startTime;
     console.log("Selected Date and Time:", selectedDateTime);
     setIsTimePicked(true);
