@@ -26,8 +26,15 @@ import { useMutation } from "@apollo/client";
 import { CREATE_BOOKING_MUTATION } from "../graphql";
 import { OutlinedInput, Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { makeStyles } from '@mui/styles';
-
+import { makeStyles } from "@mui/styles";
+import BookDrivingSlot from "../components/calendar/BookingSlot";
+import moment from "moment";
+import ReactTimeslotCalendar from "react-timeslot-calendar";
+import { ScheduleMeeting } from "react-schedule-meeting";
+import DayTimePicker from "@mooncake-dev/react-day-time-picker";
+import styled from "styled-components";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import dayjs from "dayjs";
 const defaultTheme = createTheme();
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
@@ -55,10 +62,23 @@ const useStyles = makeStyles({
   },
 });
 
+const Containers = styled.div`
+  width: 475px;
+  margin: 1em auto;
+  padding: 1em;
+  background-color: #fff;
+  color: #8c52ff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px #00000018;
+  @media (max-width: 520px) {
+    width: 100%;
+  }
+`;
 export default function BookingForm() {
-  const [date, setDate] = useState(null);
-  const [startTime,setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const [date, setDate] = useState();
+  const [startTime, setStartTime] = useState("");
   const [packages, setPackage] = React.useState("");
   const [activeStep, setActiveStep] = React.useState(0);
   const [firstName, setFirstName] = useState("");
@@ -80,19 +100,27 @@ export default function BookingForm() {
   const [error, setError] = useState(false);
   const [kindOfPet, setKindOfPet] = useState("");
   const [notes, setNotes] = useState("");
+  const [isDayPicked, setIsDayPicked] = useState(false);
+  const [isTimePicked, setIsTimePicked] = useState(false);
 
   const steps = [
+    "Choose day and time",
     "Add your information",
     "Create a package",
-    "Choose day and time",
   ];
 
   const handleNext = () => {
     setError(false); // Reset the error state
 
     // Check if the current step has incomplete fields and set the error state accordingly
-    if (
-      activeStep === 0 &&
+    if (activeStep === 0 && !isDayPicked) {
+      setError(true);
+    } 
+    else if (activeStep === 0 && !isTimePicked) {
+      setError(true);
+    }
+    else if (
+      activeStep === 1 &&
       (firstName === "" ||
         lastName === "" ||
         email === "" ||
@@ -104,7 +132,7 @@ export default function BookingForm() {
     ) {
       setError(true);
     } else if (
-      activeStep === 1 &&
+      activeStep === 2 &&
       (packages === "" ||
         bedrooms === "" ||
         bathrooms === "" ||
@@ -163,7 +191,8 @@ export default function BookingForm() {
       last_name: lastName,
       email: email,
       phone_number: phoneNumber,
-      booking_date: date ? date.toDate() : null,
+      booking_date: date ? date.startOf("day").toDate() : null,
+      booking_time: startTime,
       address: address,
       city: city,
       state: state,
@@ -191,8 +220,7 @@ export default function BookingForm() {
       console.log("Created Booking:", createBooking);
 
       setDate(null);
-      setStartTime(null);
-      setEndTime(null);
+      setStartTime("");
       setPackage("");
       setFirstName("");
       setLastName("");
@@ -218,17 +246,9 @@ export default function BookingForm() {
     }
   };
 
-  const handleDateChange = (date) => {
-    setDate(date);
-  };
-
-  const handleStartTimeChange = (startTime) => {
-      setStartTime(startTime);
-  }
-  
-  const handleEndTimeChange = (endTime) => {
-    setEndTime(endTime);
-}
+  // const handleDateChange = (date) => {
+  //   setDate(date);
+  // };
 
   // Define your custom theme
   const theme = createTheme({
@@ -284,7 +304,44 @@ export default function BookingForm() {
     },
   });
 
+
+  const [timeSlots, setTimeSlots] = useState([]);
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
+
+    // Replace this logic with your actual implementation to generate time slots
+    const newTimeSlots = generateTimeSlots(newDate);
+    setTimeSlots(newTimeSlots);
+
+    setIsDayPicked(true);
+  };
+
+  // Replace this function with your logic to generate time slots
+  const generateTimeSlots = (date) => {
+    const dayOfWeek = date.day(); // Get the day of the week (0 for Sunday, 1 for Monday, ...)
+
+    // Define time slots for each day of the week
+    const dayTimeSlots = [
+      [], // Sunday (no time slots)
+      ["10:00 AM", "11:00 AM", "12:00 PM"], // Monday
+      ["10:00 AM", "11:00 AM", "12:00 PM", "10:00 AM", "11:00 AM", "12:00 PM"], // Tuesday
+      ["10:00 AM", "11:00 AM", "12:00 PM"], // Wednesday (no time slots)
+      ["10:00 AM", "11:00 AM", "12:00 PM", "10:00 AM", "11:00 AM", "12:00 PM"], // Thursday
+      ["10:00 AM", "11:00 AM", "12:00 PM", "10:00 AM", "11:00 AM", "12:00 PM"], // Friday (no time slots)
+      [], // Saturday (no time slots)
+    ];
+
+    return dayTimeSlots[dayOfWeek];
+  };
+
+  const handleStartTimeChange = (startTime) => {
+    setStartTime(startTime);
+    const selectedDateTime = date.format("MMM DD, YYYY") + " " + startTime;
+    console.log("Selected Date and Time:", selectedDateTime);
+    setIsTimePicked(true);
+  };
   const classes = useStyles();
+
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -337,6 +394,85 @@ export default function BookingForm() {
               </Stepper>
 
               {activeStep === 0 && (
+                <React.Fragment>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Grid
+                      container
+                      spacing={2}
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{
+                        paddingBottom: "20px",
+                        paddingTop: "20px",
+                      }}
+                    >
+                      <Containers
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          flexDirection: "column",
+                          alignItems: "center", // Center horizontally
+                          justifyContent: "center", // Center vertically
+                        }}
+                      >
+                        <Typography>Pick a Day and Time</Typography>
+                        <DateCalendar
+                          value={date}
+                          views={["year", "month", "day"]}
+                          onChange={handleDateChange}
+                        />
+                        <div>
+                          <Typography>Select a time slot:</Typography>
+                          <ul
+                            style={{
+                              listStyle: "none",
+                              display: "flex",
+                              margin: 0,
+                              padding: 0,
+                              flexWrap: "wrap", // Add flex-wrap property
+                            }}
+                          >
+                            {timeSlots.map((timeSlot, index) => (
+                              <li
+                                key={index}
+                                style={{
+                                  marginRight: "10px",
+                                  marginLeft: "30px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <Button
+                                  onClick={() =>
+                                    handleStartTimeChange(timeSlot)
+                                  }
+                                >
+                                  {timeSlot}
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </Containers>
+                      {error && !isDayPicked && (
+                        <Typography variant="caption" color="error">
+                          Please pick a day before proceeding.
+                        </Typography>
+                      )}
+                      {error && !isTimePicked && (
+                        <Typography variant="caption" color="error">
+                          Please pick a time before proceeding.
+                        </Typography>
+                      )}
+                    </Grid>
+                  </Box>
+                </React.Fragment>
+              )}
+
+              {activeStep === 1 && (
                 <React.Fragment>
                   <Grid
                     container
@@ -493,7 +629,7 @@ export default function BookingForm() {
                 </React.Fragment>
               )}
 
-              {activeStep === 1 && (
+              {activeStep === 2 && !bookingSubmitted ? (
                 <React.Fragment>
                   <Grid
                     container
@@ -728,55 +864,6 @@ export default function BookingForm() {
                     </Grid>
                   </Grid>
                 </React.Fragment>
-              )}
-
-              {activeStep === 2 && !bookingSubmitted ? (
-                <React.Fragment>
-                <Box display="flex" justifyContent="center" alignItems="center"  >
-                  <Grid
-                    container
-                    spacing={2}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      paddingBottom: "20px",
-                      paddingTop: "20px",
-                    }}
-                  >
-                    <Grid item xs={12}>
-                      <DatePicker
-                        label="Booking Date"
-                        required
-                        fullWidth
-                        value={date}
-                        onChange={handleDateChange}
-                        variant="outlined"
-                        sx={{ width: "100%", justifyContent: "center" }} // Add this style to center and increase width
-                      />
-                      {error && date === null && (
-                        <Typography variant="caption" color="error">
-                          Please enter the booking date.
-                        </Typography>
-                      )}
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TimePicker fullWidth label="Start time"
-                      required
-                      value={startTime}
-                      onChange={handleStartTimeChange}
-                      variant="outlined" />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TimePicker fullWidth label="End time"
-                      required
-                      value={endTime}
-                      onChange={handleEndTimeChange}
-                      variant="outlined" />
-                    </Grid>
-                  </Grid>
-                </Box>
-              </React.Fragment>
-              
               ) : null}
 
               {bookingSubmitted && (
