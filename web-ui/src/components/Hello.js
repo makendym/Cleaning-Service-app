@@ -40,11 +40,6 @@ export default function Hello() {
   };
 
 
-  if (loading) return <Typography>Loading...</Typography>;
-  if (error) {
-    console.error("HELLO_QUERY error", error);
-  }
-
   return (
     <ThemeProvider theme={customTheme}>
       <GlobalStyles
@@ -579,11 +574,6 @@ export default function Hello() {
         </Box>
       </Box>
       <Divider variant="middle" />
-      <Box>
-        {loading && "Loading..."}
-        {error && "Error (check console logs)"}
-        {!loading && !error}
-      </Box>
     </ThemeProvider>
   );
 }
