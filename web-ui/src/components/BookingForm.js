@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from 'react';
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -18,38 +18,38 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useMutation } from "@apollo/client";
 import { CREATE_BOOKING_MUTATION } from "../graphql";
-import {sStack, Chip } from "@mui/material";
+import {Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { makeStyles } from "@mui/styles";
 import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import dayjs from "dayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 const defaultTheme = createTheme();
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
 const focusedColor = "#8C52FF";
-const useStyles = makeStyles({
-  root: {
-    // input label when focused
-    "& label.Mui-focused": {
-      color: focusedColor,
-    },
-    // focused color for input with variant='standard'
-    "& .MuiInput-underline:after": {
-      borderBottomColor: focusedColor,
-    },
-    // focused color for input with variant='filled'
-    "& .MuiFilledInput-underline:after": {
-      borderBottomColor: focusedColor,
-    },
-    // focused color for input with variant='outlined'
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: focusedColor,
-      },
-    },
-  },
-});
+// const useStyles = makeStyles({
+//   root: {
+//     // input label when focused
+//     "& label.Mui-focused": {
+//       color: focusedColor,
+//     },
+//     // focused color for input with variant='standard'
+//     "& .MuiInput-underline:after": {
+//       borderBottomColor: focusedColor,
+//     },
+//     // focused color for input with variant='filled'
+//     "& .MuiFilledInput-underline:after": {
+//       borderBottomColor: focusedColor,
+//     },
+//     // focused color for input with variant='outlined'
+//     "& .MuiOutlinedInput-root": {
+//       "&.Mui-focused fieldset": {
+//         borderColor: focusedColor,
+//       },
+//     },
+//   },
+// });
 
 const Containers = styled.div`
   width: 475px;
@@ -280,8 +280,23 @@ export default function BookingForm() {
       MuiTextField: {
         styleOverrides: {
           root: {
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: focusedColor,
+            // Input label when focused
+            "& label.Mui-focused": {
+              color: focusedColor,
+            },
+            // Focused color for input with variant='standard'
+            "& .MuiInput-underline:after": {
+              borderBottomColor: focusedColor,
+            },
+            // Focused color for input with variant='filled'
+            "& .MuiFilledInput-underline:after": {
+              borderBottomColor: focusedColor,
+            },
+            // Focused color for input with variant='outlined'
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: focusedColor,
+              },
             },
           },
         },
@@ -325,7 +340,6 @@ export default function BookingForm() {
     console.log("Selected Date and Time:", selectedDateTime);
     setIsTimePicked(true);
   };
-  const classes = useStyles();
 
   return (
     <ThemeProvider theme={theme}>
@@ -364,11 +378,11 @@ export default function BookingForm() {
                       <StepLabel
                         {...labelProps}
                         StepIconProps={{
-                          classes: {
-                            root: "custom-step-icon",
-                            active: "custom-step-icon-active",
-                            completed: "custom-step-icon-completed",
-                          },
+                          // classes: {
+                          //   root: "custom-step-icon",
+                          //   active: "custom-step-icon-active",
+                          //   completed: "custom-step-icon-completed",
+                          // },
                         }}
                       >
                         {label}
@@ -466,7 +480,6 @@ export default function BookingForm() {
                   >
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         name="firstName"
                         required
                         fullWidth
@@ -485,7 +498,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="lastName"
@@ -503,7 +515,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="email"
@@ -521,7 +532,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         name="phoneNumber"
@@ -540,7 +550,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="address"
@@ -558,7 +567,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="city"
@@ -576,7 +584,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="state"
@@ -594,7 +601,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="zip"
@@ -644,7 +650,6 @@ export default function BookingForm() {
                     <Grid item xs={12} sm={6}>
                       <InputLabel> Number of bedrooms</InputLabel>
                       <TextField
-                        className={classes.root}
                         required
                         error={error && bedrooms === ""}
                         fullWidth
@@ -668,7 +673,6 @@ export default function BookingForm() {
                     <Grid item xs={12} sm={6}>
                       <InputLabel> Number of bathrooms</InputLabel>
                       <TextField
-                        className={classes.root}
                         required
                         error={error && bathrooms === ""}
                         fullWidth
@@ -694,7 +698,6 @@ export default function BookingForm() {
                         Type of Kitchen
                       </InputLabel>
                       <Select
-                        className={classes.select}
                         error={error && kitchen === ""}
                         labelId="demo-simple-select-label"
                         id="kitchen"
@@ -838,7 +841,6 @@ export default function BookingForm() {
                     <Grid item xs={12}>
                       <InputLabel> Notes</InputLabel>
                       <TextField
-                        className={classes.root}
                         placeholder="Leave detailed instrutions"
                         variant="outlined"
                         value={notes}
