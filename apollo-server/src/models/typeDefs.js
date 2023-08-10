@@ -39,6 +39,7 @@ export const typeDefs = gql`
     add_ons: [String]
     notes: String
     booking_date: GraphQLDateTime
+    booking_time: String
   }
   input BookingInput {
     createdAt: GraphQLDateTime
@@ -60,6 +61,7 @@ export const typeDefs = gql`
     add_ons: [String]
     notes: String
     booking_date: GraphQLDateTime
+    booking_time: String
   }
 
   type Mutation {

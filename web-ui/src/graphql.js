@@ -33,6 +33,7 @@ mutation CreateBookingMutation($booking: BookingInput!) {
       add_ons
       notes
       booking_date
+      booking_time
     }
   }
 
@@ -72,6 +73,7 @@ export const BOOKINGS_QUERY = gql`
             add_ons
             notes
             booking_date: GraphQLDateTime
+            booking_time
         }
 
     }
