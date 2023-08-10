@@ -87,16 +87,6 @@ export default function Example() {
                 Home
               </Button>
             </Box>
-            <Box sx={{ my: 1, mx: 1 }}>
-              <Button variant="text" color="inherit" component={Link} to="/books">
-                Books
-              </Button>
-            </Box>
-            <Box sx={{ my: 1, mx: 1 }}>
-              <Button variant="text" color="inherit" component={Link} to="/create">
-                Create Book
-              </Button>
-            </Box>
           </Box>
           <Box sx={{ my: 1, mx: 1 }}>
               <Button variant="text" color="inherit" onClick={aboutUsPage}>
