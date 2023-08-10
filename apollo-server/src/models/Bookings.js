@@ -19,6 +19,7 @@ const BookingSchema = new mongoose.Schema({
   add_ons: { type: [String] },
   notes:{type: String,},
   booking_date:{type: Date, required: true },
+  booking_time:{type: String},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
