@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {useMutation } from '@apollo/client';
 import {BOOKS_QUERY, CREATE_BOOK_MUTATION } from '../graphql';
 
-
 export default function CreateBook(){
     const [title, setTitle] = useState('');
     const [year, setYear] = useState('');
