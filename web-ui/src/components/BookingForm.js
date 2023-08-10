@@ -24,8 +24,6 @@ import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-const defaultTheme = createTheme();
-
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
 const focusedColor = "#8C52FF";
 
@@ -106,8 +104,8 @@ export default function BookingForm() {
         diningRoom === "" ||
         kitchen === "" ||
         pets === "" ||
-        (pets === "yes" && kindOfPet == "") ||
-        supplies == "")
+        (pets === "yes" && kindOfPet === "") ||
+        supplies === "")
     ) {
       setError(true);
     } else {
@@ -485,7 +483,7 @@ export default function BookingForm() {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
-                      {error && lastName == "" && (
+                      {error && lastName === "" && (
                         <Typography variant="caption" color="error">
                           Please enter your last name.
                         </Typography>
@@ -739,7 +737,6 @@ export default function BookingForm() {
                       {pets === "yes" && (
                         <TextField
                           required
-                          error={error && kindOfPet === ""}
                           fullWidth
                           id="kindOfPet"
                           name="kindOfPet"

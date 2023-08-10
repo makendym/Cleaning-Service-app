@@ -7,15 +7,12 @@ import {
 } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom"; // Import the Link component from react-router-dom
 import Box from "@mui/material/Box";
 import cleaningMirror from "../assets/cleaningMirror.jpg";
 import cleaningSink from "../assets/cleaningSink.jpg";
 import star from "../assets/icons-star.png";
-import profile from "../assets/Profile.jpg";
 import { useNavigate } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -42,9 +39,6 @@ export default function Hello() {
     navigate("/bookingForm");
   };
 
-  const { data, loading, error } = useQuery(HELLO_QUERY, {
-    variables: { name: "Brythanie" },
-  });
 
   if (loading) return <Typography>Loading...</Typography>;
   if (error) {

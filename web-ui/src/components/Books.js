@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import Book from './Book';
 import { BOOKS_QUERY, BOOKINGS_QUERY } from '../graphql';
 

@@ -10,7 +10,6 @@ import GlobalStyles from "@mui/material/GlobalStyles";
 import Box from "@mui/material/Box";
 import logo from "../assets/Quick&Fast-Logo.png";
 import { useNavigate } from "react-router-dom";
-const defaultTheme = createTheme();
 // #CE6CE6 - purple
 const customTheme = createTheme({
     typography: {
