@@ -743,7 +743,6 @@ export default function BookingForm() {
                           variant="outlined"
                           placeholder="Enter the type of pet"
                           value={kindOfPet}
-                          variant="outlined"
                           helperText={
                             error && kindOfPet === ""
                               ? "Please enter the type of pet"

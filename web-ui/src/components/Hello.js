@@ -1,5 +1,4 @@
 import * as React from "react";
-import { gql, useQuery } from "@apollo/client";
 import {
   createTheme,
   ThemeProvider,
@@ -20,11 +19,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import EmailIcon from "@mui/icons-material/Email";
-const HELLO_QUERY = gql`
-  query Query($name: String) {
-    hello(name: $name)
-  }
-`;
+
 
 let customTheme = createTheme({
   typography: {
