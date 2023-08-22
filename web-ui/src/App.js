@@ -9,7 +9,7 @@ import Example from "./layout/Example";
 import Footer from "./layout/Footer";
 import { Box } from '@mui/material';
 const client = new ApolloClient({
-  uri: "http://localhost:4000",
+  uri: "/.netlify/functions/graphql",
   cache: new InMemoryCache(),
 });
 

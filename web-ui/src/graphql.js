@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'apollo-boost';
 
 export const CREATE_BOOK_MUTATION = gql`
     mutation Mutation($title: String, $year: Int) {
