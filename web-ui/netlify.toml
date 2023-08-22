@@ -7,4 +7,4 @@ status = 200
     functions = "functions"
 
 [[plugins]]
-12:54:23 AM:   package = @netlify/plugin-functions-install-core
+package = @netlify/plugin-functions-install-core
