@@ -9,7 +9,7 @@ const server = new ApolloServer({
 });
 
 const pass = "jDhifHm3xdBcE7Qi";
-const mongoDB = `mongodb+srv://midouinmakendy:${pass}@cluster0.05pe0za.mongodb.net/?retryWrites=true&w=majority`;
+const mongoDB = `mongodb+srv://midouinmakendy:${process.env.REACT_APP_DBPASS}@cluster0.05pe0za.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.set('strictQuery', true);
 
 // Connect to MongoDB using the promise-based approach
