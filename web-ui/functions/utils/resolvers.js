@@ -8,9 +8,9 @@ const resolvers = {
     },
     Mutation: {
         create: async (_, {title, year}) => {
-            const newBook = new Book({
+            const newBook = new Book(
                 title, year
-            });
+            );
             await newBook.save();
             return newBook;
         },
