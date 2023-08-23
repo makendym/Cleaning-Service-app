@@ -1,6 +1,6 @@
 const { ApolloServer } = require('apollo-server-lambda');
 const { resolvers } = require('./utils/resolvers.js');
-const typeDefs = require('./utils/models/typeDefs'); // Import typeDefs directly
+const typeDefs = require('./utils/models/typeDefs'); 
 const mongoose = require('mongoose');
 
 const server = new ApolloServer({
