@@ -29,6 +29,19 @@ db.once('open', () => {
   console.info('📚 Connected to db', db?.client?._connectionString);
 });
 
-const handler = server.createHandler()
-
-module.exports = { handler }
+const serverHandler = server.createHandler({
+    cors: {
+      origin: '*'
+    }
+  });
+  
+  exports.handler = (event, context, callback) => {
+    return serverHandler(
+      {
+        ...event,
+        requestContext: event.requestContext || {},
+      },
+      context,
+      callback
+    );
+  };
