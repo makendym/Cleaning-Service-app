@@ -1,5 +1,5 @@
-const {Book} = require('./models/Book');
-const {Bookings} = require('./models/Bookings');
+const { Book } = require('./models/Book');
+const Bookings = require('./models/Bookings');
 const resolvers = {
     Query: {
         hello: (_, {name}) => `Hello ${name}`,
@@ -46,4 +46,4 @@ const resolvers = {
 
     }
 };
-exports.resolvers = resolvers;
+module.exports = resolvers;
