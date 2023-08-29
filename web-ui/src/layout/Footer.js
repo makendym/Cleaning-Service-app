@@ -7,11 +7,11 @@ import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+const theme = createTheme();
 
 export default function Footer() {
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme}>
       <Box
         sx={{
           display: "flex",
@@ -37,9 +37,13 @@ export default function Footer() {
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center", // Center the content horizontally
                 gap: "20px",
+                [theme.breakpoints.up("md")]: {
+                  flexDirection: "row", // Align items in a row on larger screens
+                  justifyContent: "center", // Center horizontally on larger screens
+                },
               }}
             >
               <Box>
@@ -61,19 +65,29 @@ export default function Footer() {
 
             <Divider style={{ paddingTop: "20px" }} />
 
-            <Box style={{ paddingTop: "20px", textAlign: "center" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center", // Center the content horizontally
+                paddingTop: "20px",
+              }}
+            >
               <Typography variant="body1">Serving in: New York</Typography>
             </Box>
 
             <Divider style={{ paddingTop: "20px" }} />
 
             <Box
-              style={{
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center", // Center the content horizontally
                 paddingTop: "20px",
-                textAlign: "center",
                 marginTop: "auto",
               }}
             >
+              {/* Your additional content here */}
             </Box>
           </Container>
         </Box>

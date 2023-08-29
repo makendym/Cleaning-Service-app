@@ -22,13 +22,13 @@ export default function Example() {
   const BookingPage = () => {
     navigate("/bookingForm");
   };
-  
+
   return (
     <ThemeProvider theme={customTheme}>
       <GlobalStyles
         styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
       />
-      <CssBaseline />
+      <CssBaseline />(
       <AppBar
         position="static"
         color="default"
@@ -36,48 +36,49 @@ export default function Example() {
         sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
       >
         <Toolbar sx={{ flexWrap: "wrap" }}>
-          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              flexGrow: 1,
+              gap: "20px",
+            }}
+          >
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <img
+                src={logo}
+                alt="Logo"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50px",
+                }}
+              />
+            </Link>
             <Box>
-              <Link to="/">
-                <img
-                  src={logo}
-                  alt="Logo"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50px",
-                  }}
-                />
-              </Link>
-            </Box>
-            <Box>
-              <Typography
-                variant="h6"
-                color="inherit"
-                noWrap
-                sx={{ flexGrow: 1 }}
-              >
+              <Typography variant="h6" color="inherit" noWrap>
                 Quick &amp; Fast
               </Typography>
-              <Typography
-                variant="subtitle1"
-                color="inherit"
-                noWrap
-                sx={{ flexGrow: 1 }}
-              >
+              <Typography variant="subtitle1" color="inherit" noWrap>
                 Cleaning Services
               </Typography>
             </Box>
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+          >
             <Box sx={{ my: 1, mx: 1 }}>
               <Button
                 onClick={BookingPage}
                 style={{ color: "#8C52FF" }}
                 color="inherit"
                 variant="outlined"
-                sx={{ my: 1, mx: 1.5 }}
               >
                 Book Now
               </Button>

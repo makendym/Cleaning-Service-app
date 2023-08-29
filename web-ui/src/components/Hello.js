@@ -20,7 +20,6 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import EmailIcon from "@mui/icons-material/Email";
 
-
 let customTheme = createTheme({
   typography: {
     fontFamily: "Squada One",
@@ -34,77 +33,90 @@ export default function Hello() {
     navigate("/bookingForm");
   };
 
-
   return (
     <ThemeProvider theme={customTheme}>
       <GlobalStyles
         styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
       />
-
-      <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 1,
-            paddingRight: "10px",
-          }}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        alignItems: { xs: "center", md: "flex-start" },
+        flexGrow: 1,
+        padding: "20px",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          flexGrow: 1,
+          paddingRight: { xs: "0px", md: "10px" },
+          textAlign: { xs: "center", md: "left" },
+          marginBottom: { xs: "20px", md: "0px" },
+          alignItems: { xs: "center", md: "flex-start" }, // Align items to the left on medium and larger screens
+        }}
+      >
+        <Typography
+          variant="h2"
+          color="inherit"
+          sx={{ fontWeight: "bold", mb: 2 }}
         >
-          <Typography
-            variant="h2"
-            color="inherit"
-            sx={{ fontWeight: "bold", mb: 2 }}
-          >
-            Expert home cleaning services.
-          </Typography>
-          <Typography variant="subtitle1" color="inherit" sx={{ mb: 2 }}>
-            Get a specific room or full home cleaned at times that work best for
-            you.
-          </Typography>
-          <Button
-            style={{ backgroundColor: "#8C52FF", width: "140px" }}
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={BookingPage}
-          >
-            Book Now
-          </Button>
-          <Typography
-            variant="subtitle2"
-            color="inherit"
-            style={{
-              paddingTop: "15px",
-              paddingRight: "10px",
-              paddingLeft: "5px",
-              fontSize: "14px",
-            }}
-            sx={{ mb: 2 }}
-          >
-            Starting at $22 an hour
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
-            maxWidth: "100%", // Set the maxWidth relative to the viewport width
-            width: "60vh",
+          Expert home cleaning services.
+        </Typography>
+        <Typography variant="subtitle1" color="inherit" sx={{ mb: 2 }}>
+          Get a specific room or full home cleaned at times that work best for
+          you.
+        </Typography>
+        <Button
+          style={{
+            backgroundColor: "#8C52FF",
+            width: "140px",
+            alignSelf: { xs: "center", md: "flex-start" }, // Center the button on small screens, align to the left on medium and larger screens
+            marginBottom: "10px",
+          }}
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={BookingPage}
+        >
+          Book Now
+        </Button>
+        <Typography
+          variant="subtitle2"
+          color="inherit"
+          style={{
+            paddingTop: "15px",
+            alignSelf: { xs: "center", md: "flex-start" }, // Center the text on small screens, align to the left on medium and larger screens
+            fontSize: "14px",
+          }}
+          sx={{ mb: 2 }}
+        >
+          Starting at $22 an hour
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+          maxWidth: "100%",
+          width: "60vh",
+          height: "auto",
+          borderRadius: "15px",
+        }}
+      >
+        <img
+          src={cleaningMirror}
+          alt="cleaningMirror"
+          style={{
+            maxWidth: "100%",
+            width: "100%",
             height: "auto",
             borderRadius: "15px",
           }}
-        >
-          <img
-            src={cleaningMirror}
-            alt="cleaningMirror"
-            style={{
-              maxWidth: "100%",
-              width: "100%",
-              height: "auto",
-              borderRadius: "15px",
-            }}
-          />
-        </Box>
+        />
       </Box>
+    </Box>
 
       <Divider
         style={{ paddingTop: "20px", paddingBottom: "20px" }}
@@ -120,7 +132,14 @@ export default function Hello() {
           paddingBottom: "50px",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "column", flexGrow: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            flexGrow: 1,
+          }}
+        >
           <Typography
             variant="h4"
             color="inherit"
@@ -129,15 +148,27 @@ export default function Hello() {
             What are you looking for?
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "row", flexGrow: 1 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            flexGrow: 1,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              mb: { xs: 2, md: 0 },
+              mr: { xs: 0, md: 2 },
+            }}
+          >
             <Button
               sx={{
-                width: { xs: "100%", md: "400px" },
-                height: { xs: "150px", md: "200px" },
+                width: "100%",
+                height: { xs: "100px", md: "200px" },
                 borderRadius: "15px",
-                mb: { xs: 2, md: 0 },
-                mr: { xs: 0, md: 2 },
                 backgroundColor: "#f0ecfc",
               }}
               variant="outlined"
@@ -176,14 +207,20 @@ export default function Hello() {
               </Box>
             </Button>
           </Box>
-          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              mb: { xs: 2, md: 0 },
+              mr: { xs: 0, md: 2 },
+            }}
+          >
             <Button
               sx={{
-                width: { xs: "100%", md: "400px" },
-                height: { xs: "150px", md: "200px" },
+                width: "100%",
+                height: { xs: "100px", md: "200px" },
                 borderRadius: "15px",
-                mb: { xs: 2, md: 0 },
-                mr: { xs: 0, md: 2 },
                 backgroundColor: "#f0ecfc",
               }}
               variant="outlined"
@@ -224,6 +261,7 @@ export default function Hello() {
           </Box>
         </Box>
       </Box>
+
       <Divider
         style={{ paddingTop: "20px", paddingBottom: "20px" }}
         variant="middle"
@@ -231,6 +269,7 @@ export default function Hello() {
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
           flexGrow: 1,
           marginTop: "20px",
@@ -241,17 +280,18 @@ export default function Hello() {
           sx={{
             marginTop: "20px",
             paddingTop: "10px",
-            paddingRight: "10px",
+            paddingRight: { xs: "0", md: "10px" },
             display: "flex",
             flexDirection: "column",
             flexGrow: 1,
             paddingBottom: "50px",
+            width: { xs: "100%", md: "75%" },
           }}
         >
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", md: "row" },
               alignItems: "center",
               flexGrow: 1,
             }}
@@ -263,6 +303,7 @@ export default function Hello() {
                 width: "40px",
                 height: "40px",
                 alignItems: "center",
+                marginBottom: { xs: "10px", md: "0" },
               }}
             />
             <Typography
@@ -270,9 +311,9 @@ export default function Hello() {
               color="inherit"
               sx={{
                 fontWeight: "bold",
-                mb: 1,
-                paddingLeft: "15px",
-                marginTop: "10px",
+                mb: { xs: 1, md: 0 },
+                paddingLeft: { xs: "0", md: "15px" },
+                marginTop: { xs: "10px", md: "0" },
               }}
             >
               Who Are We ?
@@ -284,17 +325,15 @@ export default function Hello() {
               flexDirection: "row",
               alignItems: "center",
               flexGrow: 1,
-              width: "75%",
             }}
           >
             <Box style={{ padding: "20px" }}>
-              {" "}
               <PersonIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We have gained valuable experience over the past 2.5
-              years, serving a wide range of customers. From local homes, Airbnb properties 
-              to luxurious residences.
+              We have gained valuable experience over the past 2.5 years,
+              serving a wide range of customers. From local homes, Airbnb
+              properties to luxurious residences.
             </Typography>
           </Box>
           <Box
@@ -303,16 +342,15 @@ export default function Hello() {
               flexDirection: "row",
               alignItems: "center",
               flexGrow: 1,
-              width: "75%",
             }}
           >
             <Box style={{ padding: "20px" }}>
               <MeetingRoomIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We are dedicated to providing exceptional cleaning services tailored to your
-              needs. You can trust us to maintain a pristine and inviting
-              environment in your home.
+              We are dedicated to providing exceptional cleaning services
+              tailored to your needs. You can trust us to maintain a pristine
+              and inviting environment in your home.
             </Typography>
           </Box>
           <Box
@@ -335,7 +373,7 @@ export default function Hello() {
           sx={{
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
             maxWidth: "100%", // Set the maxWidth relative to the viewport width
-            width: "80vh",
+            width: { xs: "100%", md: "80vh" },
             height: "auto",
             borderRadius: "15px",
           }}
@@ -353,34 +391,37 @@ export default function Hello() {
           />
         </Box>
       </Box>
+
       <Divider
         style={{ paddingTop: "10px", paddingBottom: "10px" }}
         variant="middle"
       />
       <Box
         sx={{
-          marginTop: "20px",
-          paddingTop: "20px",
           display: "flex",
+          flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
           flexGrow: 1,
+          marginTop: "20px",
+          paddingTop: "20px",
         }}
       >
         <Box
           sx={{
             marginTop: "20px",
             paddingTop: "10px",
-            paddingRight: "10px",
+            paddingRight: { xs: "0", md: "10px" },
             display: "flex",
             flexDirection: "column",
             flexGrow: 1,
             paddingBottom: "50px",
+            width: { xs: "100%", md: "75%" },
           }}
         >
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", md: "row" },
               alignItems: "center",
               flexGrow: 1,
             }}
@@ -392,6 +433,7 @@ export default function Hello() {
                 width: "40px",
                 height: "40px",
                 alignItems: "center",
+                marginBottom: { xs: "10px", md: "0" },
               }}
             />
             <Typography
@@ -399,9 +441,9 @@ export default function Hello() {
               color="inherit"
               sx={{
                 fontWeight: "bold",
-                mb: 1,
-                paddingLeft: "15px",
-                marginTop: "10px",
+                mb: { xs: 1, md: 0 },
+                paddingLeft: { xs: "0", md: "15px" },
+                marginTop: { xs: "10px", md: "0" },
               }}
             >
               4.9+ Customer Ratings
@@ -413,17 +455,15 @@ export default function Hello() {
               flexDirection: "row",
               alignItems: "center",
               flexGrow: 1,
-              width: "75%",
             }}
           >
             <Box style={{ padding: "20px" }}>
-              {" "}
               <PersonIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We have gained valuable experience over the past 2.5
-              years, serving a wide range of customers. From local homes, Airbnb properties 
-              to luxurious residences.
+              We have gained valuable experience over the past 2.5 years,
+              serving a wide range of customers. From local homes, Airbnb
+              properties to luxurious residences.
             </Typography>
           </Box>
           <Box
@@ -432,16 +472,15 @@ export default function Hello() {
               flexDirection: "row",
               alignItems: "center",
               flexGrow: 1,
-              width: "75%",
             }}
           >
             <Box style={{ padding: "20px" }}>
               <MeetingRoomIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We are dedicated to providing exceptional cleaning services tailored to your
-              needs. You can trust us to maintain a pristine and inviting
-              environment in your home.
+              We are dedicated to providing exceptional cleaning services
+              tailored to your needs. You can trust us to maintain a pristine
+              and inviting environment in your home.
             </Typography>
           </Box>
           <Box
@@ -450,7 +489,6 @@ export default function Hello() {
               flexDirection: "row",
               alignItems: "center",
               flexGrow: 1,
-              width: "75%",
             }}
           >
             <Box style={{ padding: "20px" }}>
@@ -465,7 +503,7 @@ export default function Hello() {
           sx={{
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
             maxWidth: "100%", // Set the maxWidth relative to the viewport width
-            width: "80vh",
+            width: { xs: "100%", md: "80vh" },
             height: "auto",
             borderRadius: "15px",
           }}
@@ -482,6 +520,7 @@ export default function Hello() {
           />
         </Box>
       </Box>
+
       <Divider
         style={{ paddingTop: "20px", paddingBottom: "20px" }}
         variant="middle"
@@ -500,24 +539,21 @@ export default function Hello() {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            width: "fit-content", // Adjust the width to fit the contents inside
-            margin: "0 auto", // Center the inner box horizontally
+            flexDirection: { xs: "column", md: "row" }, // Row for larger screens
+            justifyContent: "space-around", // Evenly distribute content horizontally
+            alignItems: "center", // Center content vertically
+            gap: "20px",
+            width: "100%", // Full width of parent container
+            margin: "0 auto", // Center horizontally
           }}
         >
-          <Typography
-            variant="h4"
-            color="inherit"
-            sx={{ mb: 1, textAlign: "center", fontWeight: "bold" }}
-          >
-            Got questions?
-          </Typography>
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
-              alignItems: "left",
+              flexDirection: "column",
+              alignItems: "center",
               flexGrow: 1,
+              padding: "20px",
             }}
           >
             <Box style={{ padding: "20px" }}>
@@ -526,12 +562,12 @@ export default function Hello() {
             <Typography
               variant="body1"
               color="inherit"
-              sx={{ mb: 1, paddingTop: "20px" }}
+              sx={{ mb: 1, paddingTop: "20px", textAlign: "center" }}
             >
               <Typography
                 variant="body1"
                 color="inherit"
-                sx={{ fontWeight: "bold", paddingRight: "10px" }}
+                sx={{ fontWeight: "bold", mb: 1 }}
               >
                 Email us:
               </Typography>
@@ -541,19 +577,24 @@ export default function Hello() {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               alignItems: "center",
               flexGrow: 1,
+              padding: "20px",
             }}
           >
             <Box style={{ padding: "20px" }}>
               <PhoneInTalkIcon />
             </Box>
-            <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
+            <Typography
+              variant="body1"
+              color="inherit"
+              sx={{ mb: 1, textAlign: "center" }}
+            >
               <Typography
                 variant="body1"
                 color="inherit"
-                sx={{ fontWeight: "bold", paddingRight: "15px" }}
+                sx={{ fontWeight: "bold", mb: 1 }}
               >
                 Call us:
               </Typography>
@@ -562,6 +603,7 @@ export default function Hello() {
           </Box>
         </Box>
       </Box>
+
       <Divider variant="middle" />
     </ThemeProvider>
   );
