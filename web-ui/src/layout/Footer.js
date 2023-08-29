@@ -7,39 +7,6 @@ import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
 import logo from "../assets/Quick&Fast-Logo.png";
-function Copyright() {
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center", // Vertically align the items
-        textAlign: "center",
-        justifyContent: "center", // Center the content horizontally
-      }}
-    >
-      <Link to="/">
-        <img
-          src={logo}
-          alt="Logo"
-          style={{
-            width: "100px",
-            height: "100px",
-            borderRadius: "50px",
-          }}
-        />
-      </Link>
-      <Typography variant="body2" color="text.secondary">
-        {"Copyright © "}
-        <Link color="inherit" href="https://mui.com/">
-          Quick &amp; Fast
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
-    </Box>
-  );
-}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -109,7 +76,6 @@ export default function Footer() {
                 marginTop: "auto",
               }}
             >
-              <Copyright />
             </Box>
           </Container>
         </Box>

@@ -275,7 +275,7 @@ export default function Hello() {
                 marginTop: "10px",
               }}
             >
-              Who am I ?
+              Who Are We ?
             </Typography>
           </Box>
           <Box
@@ -292,11 +292,9 @@ export default function Hello() {
               <PersonIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              I have gained valuable cleaning experience over the past 2.5
-              years, serving a wide range of customers. From local homes to
-              luxurious residences and even Airbnb properties, I have had the
-              privilege of ensuring clean and comfortable living spaces for many
-              satisfied clients.
+              We have gained valuable experience over the past 2.5
+              years, serving a wide range of customers. From local homes, Airbnb properties 
+              to luxurious residences.
             </Typography>
           </Box>
           <Box
@@ -312,10 +310,9 @@ export default function Hello() {
               <MeetingRoomIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              With my expertise and attention to detail, I am dedicated to
-              providing exceptional cleaning services tailored to your specific
-              needs. You can trust me to maintain a pristine and inviting
-              environment in your home or rental property.
+              We are dedicated to providing exceptional cleaning services tailored to your
+              needs. You can trust us to maintain a pristine and inviting
+              environment in your home.
             </Typography>
           </Box>
           <Box
@@ -424,11 +421,9 @@ export default function Hello() {
               <PersonIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              I have gained valuable cleaning experience over the past 2.5
-              years, serving a wide range of customers. From local homes to
-              luxurious residences and even Airbnb properties, I have had the
-              privilege of ensuring clean and comfortable living spaces for many
-              satisfied clients.
+              We have gained valuable experience over the past 2.5
+              years, serving a wide range of customers. From local homes, Airbnb properties 
+              to luxurious residences.
             </Typography>
           </Box>
           <Box
@@ -444,10 +439,9 @@ export default function Hello() {
               <MeetingRoomIcon />
             </Box>
             <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              With my expertise and attention to detail, I am dedicated to
-              providing exceptional cleaning services tailored to your specific
-              needs. You can trust me to maintain a pristine and inviting
-              environment in your home or rental property.
+              We are dedicated to providing exceptional cleaning services tailored to your
+              needs. You can trust us to maintain a pristine and inviting
+              environment in your home.
             </Typography>
           </Box>
           <Box
