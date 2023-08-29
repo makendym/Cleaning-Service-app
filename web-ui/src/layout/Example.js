@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -22,15 +22,45 @@ export default function Example() {
     navigate("/bookingForm");
   };
 
+  const [isTransparent, setIsTransparent] = useState(true);
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    if (scrollTop === 0) {
+      setIsTransparent(true);
+    } else {
+      setIsTransparent(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <ThemeProvider theme={customTheme}>
       <CssBaseline />
-      <Box sx={{ position: "sticky", top: 0, zIndex: 100 }}>
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+          backgroundColor: isTransparent
+            ? "rgba(255, 255, 255, 0.9)" // Adjust the alpha value here
+            : "#ffffff",
+        }}
+      >
         <AppBar
           position="static"
           color="default"
-          elevation={0}
-          sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+          elevation={isTransparent ? 0 : 1}
+          sx={{
+            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+            backgroundColor: isTransparent ? "transparent" : "#ffffff",
+          }}
         >
           <Toolbar sx={{ flexWrap: "wrap" }}>
             <Box
@@ -42,17 +72,30 @@ export default function Example() {
                 gap: "20px",
               }}
             >
-              <Link to="/" style={{ textDecoration: "none" }}>
-                <img
-                  src={logo}
-                  alt="Logo"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50px",
-                  }}
-                />
-              </Link>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", // Add shadow
+                  borderRadius: "50%", // Use a circular border radius
+                  width: "100px", // Set width to match the logo width
+                  height: "100px", // Set height to match the logo height
+                  overflow: "hidden", // Hide any overflowing content
+                }}
+              >
+                <Link to="/" style={{ textDecoration: "none" }}>
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "50px",
+                    }}
+                  />
+                </Link>
+              </Box>
               <Box>
                 <Typography variant="h6" color="inherit" noWrap>
                   Quick &amp; Fast

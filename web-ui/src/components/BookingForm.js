@@ -24,6 +24,7 @@ import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import emailjs from "@emailjs/browser";
+import Example from "../layout/Example";
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
 const focusedColor = "#8C52FF";
@@ -346,6 +347,7 @@ export default function BookingForm() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Example/>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Container
           component="main"

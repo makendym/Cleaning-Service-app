@@ -9,7 +9,6 @@ import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import cleaningMirror from "../assets/cleaningMirror.jpg";
 import cleaningSink from "../assets/cleaningSink.jpg";
 import star from "../assets/icons-star.png";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import EmailIcon from "@mui/icons-material/Email";
-
+import Example from "../layout/Example";
 let customTheme = createTheme({
   typography: {
     fontFamily: "Squada One",
@@ -35,88 +34,117 @@ export default function Hello() {
 
   return (
     <ThemeProvider theme={customTheme}>
+      <Example/>
       <GlobalStyles
         styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
       />
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
-        alignItems: { xs: "center", md: "flex-start" },
-        flexGrow: 1,
-        padding: "20px",
-      }}
-    >
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: { xs: "center", md: "flex-start" },
           flexGrow: 1,
-          paddingRight: { xs: "0px", md: "10px" },
-          textAlign: { xs: "center", md: "left" },
-          marginBottom: { xs: "20px", md: "0px" },
-          alignItems: { xs: "center", md: "flex-start" }, // Align items to the left on medium and larger screens
+          padding: "20px",
+          position: "relative",
         }}
       >
-        <Typography
-          variant="h2"
-          color="inherit"
-          sx={{ fontWeight: "bold", mb: 2 }}
-        >
-          Expert home cleaning services.
-        </Typography>
-        <Typography variant="subtitle1" color="inherit" sx={{ mb: 2 }}>
-          Get a specific room or full home cleaned at times that work best for
-          you.
-        </Typography>
-        <Button
-          style={{
-            backgroundColor: "#8C52FF",
-            width: "140px",
-            alignSelf: { xs: "center", md: "flex-start" }, // Center the button on small screens, align to the left on medium and larger screens
-            marginBottom: "10px",
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 1,
+            paddingRight: { xs: "0px", md: "10px" },
+            textAlign: { xs: "center", md: "left" },
+            marginBottom: { xs: "20px", md: "0px" },
+            alignItems: { xs: "center", md: "flex-start" },
+            position: "relative",
+            zIndex: 1,
           }}
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={BookingPage}
         >
-          Book Now
-        </Button>
-        <Typography
-          variant="subtitle2"
-          color="inherit"
-          style={{
-            paddingTop: "15px",
-            alignSelf: { xs: "center", md: "flex-start" }, // Center the text on small screens, align to the left on medium and larger screens
-            fontSize: "14px",
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              paddingRight: { xs: "0px", md: "10px" },
+              textAlign: { xs: "center", md: "left" },
+              marginBottom: { xs: "20px", md: "0px" },
+              alignItems: { xs: "center", md: "flex-start" },
+              position: "relative", // Add relative positioning
+              zIndex: 1, // Set a higher z-index to ensure text is on top
+            }}
+          >
+            <Typography
+              variant="h2"
+              color="white"
+              sx={{ fontWeight: "bold", mb: 2 }}
+            >
+              Expert home cleaning services.
+            </Typography>
+            <Typography variant="subtitle1" color="white" sx={{ mb: 2 }}>
+              Get a specific room or full home cleaned at times that work best
+              for you.
+            </Typography>
+            <Button
+              style={{
+                backgroundColor: "#8C52FF",
+                width: "140px",
+                alignSelf: { xs: "center", md: "flex-start" },
+                marginBottom: "10px",
+              }}
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={BookingPage}
+            >
+              Book Now
+            </Button>
+            <Typography
+              variant="subtitle2"
+              color="white"
+              style={{
+                paddingTop: "15px",
+                alignSelf: { xs: "center", md: "flex-start" },
+                fontSize: "14px",
+              }}
+              sx={{ mb: 2 }}
+            >
+              Starting at $22 an hour
+            </Typography>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100vw", // Take the entire viewport width
+            height: "100%",
+            zIndex: 0,
+            overflow: "hidden", // Ensure the video doesn't overflow
           }}
-          sx={{ mb: 2 }}
         >
-          Starting at $22 an hour
-        </Typography>
+          <video
+            autoPlay
+            loop
+            muted
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)", // Center the video
+              width: "auto",
+              height: "100%", // Cover the entire height
+              minWidth: "100%", // Ensure the video covers the width
+              objectFit: "cover",
+              opacity: "0.8", 
+            }}
+          >
+            <source src="https://d3lh4iw97b9uun.cloudfront.net/vaccum.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </Box>
       </Box>
-      <Box
-        sx={{
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
-          maxWidth: "100%",
-          width: "60vh",
-          height: "auto",
-          borderRadius: "15px",
-        }}
-      >
-        <img
-          src={cleaningMirror}
-          alt="cleaningMirror"
-          style={{
-            maxWidth: "100%",
-            width: "100%",
-            height: "auto",
-            borderRadius: "15px",
-          }}
-        />
-      </Box>
-    </Box>
 
       <Divider
         style={{ paddingTop: "20px", paddingBottom: "20px" }}
@@ -125,6 +153,7 @@ export default function Hello() {
       <Box
         sx={{
           marginTop: "20px",
+          paddingX: { xs: "20px", md: "80px" },
           paddingTop: "20px",
           display: "flex",
           flexDirection: "column",
@@ -270,6 +299,7 @@ export default function Hello() {
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
+          paddingX: { xs: "20px", md: "80px" },
           alignItems: "center",
           flexGrow: 1,
           marginTop: "20px",
@@ -400,6 +430,7 @@ export default function Hello() {
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
+          paddingX: { xs: "20px", md: "80px" },
           alignItems: "center",
           flexGrow: 1,
           marginTop: "20px",
@@ -514,9 +545,9 @@ export default function Hello() {
             style={{
               maxWidth: "100%",
               width: "100%", // Set the width relative to the viewport width
-              height: "auto",
+              heixsght: "auto",
               borderRadius: "15px",
-            }}
+            }}xs
           />
         </Box>
       </Box>
@@ -527,6 +558,7 @@ export default function Hello() {
       />
       <Box
         sx={{
+          paddingX: { xs: "20px", md: "80px" },
           marginTop: "20px",
           paddingTop: "10px",
           paddingRight: "10px",
