@@ -7,8 +7,11 @@ import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const theme = createTheme();
-
+const theme = createTheme({
+  typography: {
+    fontFamily: "'Poppins', sans-serif",
+  },
+});
 export default function Footer() {
   return (
     <ThemeProvider theme={theme}>

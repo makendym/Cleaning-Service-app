@@ -24,7 +24,6 @@ import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import emailjs from "@emailjs/browser";
-import Example from "../layout/Example";
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
 const focusedColor = "#8C52FF";
@@ -44,7 +43,7 @@ const Containers = styled.div`
   }
 `;
 export default function BookingForm() {
-  const [date, setDate] = useState();
+  const [date, setDate] = useState(null);
   const [startTime, setStartTime] = useState("");
   const [packages, setPackage] = React.useState("");
   const [activeStep, setActiveStep] = React.useState(0);
@@ -242,6 +241,9 @@ export default function BookingForm() {
 
   // Define your custom theme
   const theme = createTheme({
+    typography: {
+      fontFamily: "'Poppins', sans-serif",
+    },
     components: {
       MuiStepIcon: {
         styleOverrides: {
@@ -306,6 +308,18 @@ export default function BookingForm() {
           },
         },
       },
+      MuiPickersDay: {
+        styleOverrides: {
+          root: {
+            "&:hover": {
+              backgroundColor: focusedColor, // Change the hover background color
+            },
+            "&.Mui-selected ": {
+              backgroundColor: focusedColor, // Change the selected background color
+            },
+          },
+        },
+      },
     },
   });
 
@@ -328,10 +342,37 @@ export default function BookingForm() {
     const dayTimeSlots = [
       [], // Sunday (no time slots)
       ["10:00 AM", "11:00 AM", "12:00 PM"], // Monday
-      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Tuesday
+      [
+        "10:00 AM",
+        "11:00 AM",
+        "12:00 PM",
+        "01:00 PM",
+        "02:00 PM",
+        "03:00 PM",
+        "04:00 PM",
+        "05:00 PM",
+      ], // Tuesday
       ["10:00 AM", "11:00 AM", "12:00 PM"], // Wednesday (no time slots)
-      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Thursday
-      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Friday (no time slots)
+      [
+        "10:00 AM",
+        "11:00 AM",
+        "12:00 PM",
+        "01:00 PM",
+        "02:00 PM",
+        "03:00 PM",
+        "04:00 PM",
+        "05:00 PM",
+      ], // Thursday
+      [
+        "10:00 AM",
+        "11:00 AM",
+        "12:00 PM",
+        "01:00 PM",
+        "02:00 PM",
+        "03:00 PM",
+        "04:00 PM",
+        "05:00 PM",
+      ], // Friday (no time slots)
       [], // Saturday (no time slots)
     ];
 
@@ -347,7 +388,6 @@ export default function BookingForm() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Example/>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Container
           component="main"
@@ -400,87 +440,93 @@ export default function BookingForm() {
               </Stepper>
 
               {activeStep === 0 && (
-             <React.Fragment>
-             <Box
-               display="flex"
-               justifyContent="center"
-               alignItems="center"
-             >
-               <Grid
-                 container
-                 spacing={2}
-                 justifyContent="center"
-                 alignItems="center"
-                 sx={{
-                   paddingBottom: "20px",
-                   paddingTop: "20px",
-                 }}
-               >
-                 <Containers
-                   style={{
-                     display: "flex",
-                     flexWrap: "wrap",
-                     flexDirection: "column",
-                     alignItems: "center", // Center horizontally
-                     justifyContent: "center", // Center vertically
-                   }}
-                 >
-                   <Typography>Pick a Day and Time</Typography>
-                   <DateCalendar
-                     value={date}
-                     views={["year", "month", "day"]}
-                     onChange={handleDateChange}
-                   />
-                   <div>
-                     <Typography>Select a time slot:</Typography>
-                     <ul
-                       style={{
-                         listStyle: "none",
-                         display: "flex",
-                         flexDirection: "row",
-                         alignItems: "center", // Center horizontally
-                         paddingTop: 10,
-                         margin: 0,
-                         padding: 0,
-                         gap: "10px", // Add gap for spacing between time slots
-                         flexWrap: "wrap", 
-                       }}
-                     >
-                       {timeSlots.map((timeSlot, index) => (
-                         <li
-                           key={index}
-                           style={{
-                             marginBottom: "10px",
-                           }}
-                         >
-                           <Button
-                             onClick={() => handleStartTimeChange(timeSlot)}
-                             style={{
-                               backgroundColor:
-                                 startTime === timeSlot ? focusedColor : "",
-                               color: startTime === timeSlot ? "white" : "",
-                             }}
-                           >
-                             {timeSlot}
-                           </Button>
-                         </li>
-                       ))}
-                     </ul>
-                   </div>
-                 </Containers>
-                 {error && !isDayPicked && (
-                   <Typography variant="caption" color="error">
-                     Please pick a day before proceeding.
-                   </Typography>
-                 )}
-                 {error && !isTimePicked && (
-                   <Typography variant="caption" color="error">
-                     Please pick a time before proceeding.
-                   </Typography>
-                 )}
-               </Grid>
-             </Box>
-           </React.Fragment>
+                <React.Fragment>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Grid
+                      container
+                      spacing={2}
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{
+                        paddingBottom: "20px",
+                        paddingTop: "20px",
+                      }}
+                    >
+                      <Containers
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          flexDirection: "column",
+                          alignItems: "center", // Center horizontally
+                          justifyContent: "center", // Center vertically
+                        }}
+                      >
+                        <Typography>Pick a Day and Time</Typography>
+                        <DateCalendar
+                          value={date}
+                          disablePast
+                          views={["year", "month", "day"]}
+                          onChange={handleDateChange}
+                        />
+                        <div>
+                          <Typography>Select a time slot:</Typography>
+                          <ul
+                            style={{
+                              listStyle: "none",
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center", // Center horizontally
+                              paddingTop: 10,
+                              margin: 0,
+                              padding: 0,
+                              gap: "10px", // Add gap for spacing between time slots
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            {timeSlots.map((timeSlot, index) => (
+                              <li
+                                key={index}
+                                style={{
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <Button
+                                  onClick={() =>
+                                    handleStartTimeChange(timeSlot)
+                                  }
+                                  style={{
+                                    backgroundColor:
+                                      startTime === timeSlot
+                                        ? focusedColor
+                                        : "",
+                                    color:
+                                      startTime === timeSlot ? "white" : "",
+                                  }}
+                                >
+                                  {timeSlot}
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </Containers>
+                      {error && !isDayPicked && (
+                        <Typography variant="caption" color="error">
+                          Please pick a day before proceeding.
+                        </Typography>
+                      )}
+                      {error && !isTimePicked && (
+                        <Typography variant="caption" color="error">
+                          Please pick a time before proceeding.
+                        </Typography>
+                      )}
+                    </Grid>
+                  </Box>
+                </React.Fragment>
               )}
 
               {activeStep === 1 && (

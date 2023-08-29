@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 // #CE6CE6 - purple
 const customTheme = createTheme({
   typography: {
-    fontFamily: "Squada One",
+    fontFamily: "'Poppins', sans-serif",
   },
 });
 
@@ -60,6 +60,10 @@ export default function Example() {
           sx={{
             borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
             backgroundColor: isTransparent ? "transparent" : "#ffffff",
+            paddingRight: "2px",
+            paddingLeft: "2px",
+            paddingTop: "10px",
+            paddingBottom: "10px",
           }}
         >
           <Toolbar sx={{ flexWrap: "wrap" }}>
@@ -69,7 +73,7 @@ export default function Example() {
                 alignItems: "center",
                 justifyContent: "flex-start",
                 flexGrow: 1,
-                gap: "20px",
+                gap: "10px",
               }}
             >
               <Box
@@ -79,8 +83,8 @@ export default function Example() {
                   justifyContent: "center",
                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", // Add shadow
                   borderRadius: "50%", // Use a circular border radius
-                  width: "100px", // Set width to match the logo width
-                  height: "100px", // Set height to match the logo height
+                  width: { xs: "60px", sm: "100px" }, // Adjust width for different screen sizes
+                  height: { xs: "60px", sm: "100px" }, // Adjust height for different screen sizes
                   overflow: "hidden", // Hide any overflowing content
                 }}
               >
@@ -89,13 +93,14 @@ export default function Example() {
                     src={logo}
                     alt="Logo"
                     style={{
-                      width: "100px",
-                      height: "100px",
+                      width: "100%", // Make the image width fit its container
+                      height: "100%", // Make the image height fit its container
                       borderRadius: "50px",
                     }}
                   />
                 </Link>
               </Box>
+
               <Box>
                 <Typography variant="h6" color="inherit" noWrap>
                   Quick &amp; Fast
@@ -111,6 +116,7 @@ export default function Example() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "flex-end",
+                flexGrow: 1,
               }}
             >
               <Box sx={{ my: 1, mx: 1 }}>

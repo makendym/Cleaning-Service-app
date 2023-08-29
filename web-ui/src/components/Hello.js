@@ -18,10 +18,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import EmailIcon from "@mui/icons-material/Email";
-import Example from "../layout/Example";
 let customTheme = createTheme({
   typography: {
-    fontFamily: "Squada One",
+    fontFamily: "'Poppins', sans-serif",
   },
 });
 
@@ -34,7 +33,6 @@ export default function Hello() {
 
   return (
     <ThemeProvider theme={customTheme}>
-      <Example/>
       <GlobalStyles
         styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
       />
@@ -79,7 +77,7 @@ export default function Hello() {
               color="white"
               sx={{ fontWeight: "bold", mb: 2 }}
             >
-              Expert home cleaning services.
+                Expert home cleaning services.
             </Typography>
             <Typography variant="subtitle1" color="white" sx={{ mb: 2 }}>
               Get a specific room or full home cleaned at times that work best
@@ -128,7 +126,7 @@ export default function Hello() {
             autoPlay
             loop
             muted
-            playsInline 
+            playsInline
             style={{
               position: "absolute",
               top: "50%",
@@ -138,10 +136,13 @@ export default function Hello() {
               height: "100%", // Cover the entire height
               minWidth: "100%", // Ensure the video covers the width
               objectFit: "cover",
-              opacity: "0.8", 
+              opacity: "0.8",
             }}
           >
-            <source src="https://d3lh4iw97b9uun.cloudfront.net/vaccum.mp4" type="video/mp4" />
+            <source
+              src="https://d3lh4iw97b9uun.cloudfront.net/vaccum.mp4"
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
         </Box>
@@ -548,7 +549,8 @@ export default function Hello() {
               width: "100%", // Set the width relative to the viewport width
               height: "auto",
               borderRadius: "15px",
-            }}xs
+            }}
+            xs
           />
         </Box>
       </Box>
