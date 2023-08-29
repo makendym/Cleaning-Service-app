@@ -12,28 +12,17 @@ import logo from "../assets/Quick&Fast-Logo.png";
 import { useNavigate } from "react-router-dom";
 // #CE6CE6 - purple
 const customTheme = createTheme({
-    typography: {
-      fontFamily: "Squada One",
-    },
-  });
+  typography: {
+    fontFamily: "Squada One",
+  },
+});
 
 export default function Example() {
-
-    const navigate = useNavigate();
-    const BookingPage = () => {
-      navigate("/bookingForm");
-    };
-    const schedulePage = () => {
-        navigate("/schedule");
-      };
-
-    const aboutUsPage = () => {
-        navigate("/aboutus");
-      };
-    const homePage = () =>{
-        navigate("/");
-    };
-    
+  const navigate = useNavigate();
+  const BookingPage = () => {
+    navigate("/bookingForm");
+  };
+  
   return (
     <ThemeProvider theme={customTheme}>
       <GlobalStyles
@@ -57,7 +46,7 @@ export default function Example() {
                     width: "100px",
                     height: "100px",
                     borderRadius: "50px",
-                  }} 
+                  }}
                 />
               </Link>
             </Box>
@@ -81,26 +70,19 @@ export default function Example() {
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <Box sx={{ my: 1, mx: 1 }}>
-              <Button variant="text" color="inherit" onClick={homePage}>
-                Home
+              <Button
+                onClick={BookingPage}
+                style={{ color: "#8C52FF" }}
+                color="inherit"
+                variant="outlined"
+                sx={{ my: 1, mx: 1.5 }}
+              >
+                Book Now
               </Button>
             </Box>
           </Box>
-          <Box sx={{ my: 1, mx: 1 }}>
-              <Button variant="text" color="inherit" onClick={aboutUsPage}>
-                About us
-              </Button>
-            </Box>
-            <Box sx={{ my: 1, mx: 1 }}>
-              <Button variant="text" color="inherit" onClick={schedulePage}>
-                Schedule
-              </Button>
-            </Box>
-          <Button  onClick={BookingPage} style={{color: '#8C52FF'}} color= "inherit" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-            Book Now
-          </Button> 
         </Toolbar>
       </AppBar>
     </ThemeProvider>

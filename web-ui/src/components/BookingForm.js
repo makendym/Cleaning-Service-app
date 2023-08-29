@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -18,11 +18,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useMutation } from "@apollo/client";
 import { CREATE_BOOKING_MUTATION } from "../graphql";
-import {Stack, Chip } from "@mui/material";
+import { Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import emailjs from "@emailjs/browser";
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
@@ -81,11 +81,9 @@ export default function BookingForm() {
     // Check if the current step has incomplete fields and set the error state accordingly
     if (activeStep === 0 && !isDayPicked) {
       setError(true);
-    } 
-    else if (activeStep === 0 && !isTimePicked) {
+    } else if (activeStep === 0 && !isTimePicked) {
       setError(true);
-    }
-    else if (
+    } else if (
       activeStep === 1 &&
       (firstName === "" ||
         lastName === "" ||
@@ -151,7 +149,7 @@ export default function BookingForm() {
     }
   };
 
-  const handleEmailConfirmation = () => { 
+  const handleEmailConfirmation = () => {
     emailjs
       .send(
         process.env.REACT_APP_EMAILJS_SERVICE_ID,
@@ -161,7 +159,8 @@ export default function BookingForm() {
           to_name: `${firstName + " " + lastName}`,
           from_email: "makendymidouin99@gmail.com",
           to_email: email,
-          message: "Your booking has been confirmed! Thank you for booking with us.",
+          message:
+            "Your booking has been confirmed! Thank you for booking with us.",
         },
         process.env.REACT_APP_EMAILJS_PUBLIC_KEY
       )
@@ -176,11 +175,6 @@ export default function BookingForm() {
         }
       );
   };
-
-
-
-
-
 
   const handleSubmit = async () => {
     const bookingData = {
@@ -314,7 +308,6 @@ export default function BookingForm() {
     },
   });
 
-
   const [timeSlots, setTimeSlots] = useState([]);
   const handleDateChange = (newDate) => {
     setDate(newDate);
@@ -334,10 +327,10 @@ export default function BookingForm() {
     const dayTimeSlots = [
       [], // Sunday (no time slots)
       ["10:00 AM", "11:00 AM", "12:00 PM"], // Monday
-      ["10:00 AM", "11:00 AM", "12:00 PM", "10:00 AM", "11:00 AM", "12:00 PM"], // Tuesday
+      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Tuesday
       ["10:00 AM", "11:00 AM", "12:00 PM"], // Wednesday (no time slots)
-      ["10:00 AM", "11:00 AM", "12:00 PM", "10:00 AM", "11:00 AM", "12:00 PM"], // Thursday
-      ["10:00 AM", "11:00 AM", "12:00 PM", "10:00 AM", "11:00 AM", "12:00 PM"], // Friday (no time slots)
+      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Thursday
+      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Friday (no time slots)
       [], // Saturday (no time slots)
     ];
 
@@ -387,13 +380,15 @@ export default function BookingForm() {
                     <Step key={label} {...stepProps}>
                       <StepLabel
                         {...labelProps}
-                        StepIconProps={{
-                          // classes: {
-                          //   root: "custom-step-icon",
-                          //   active: "custom-step-icon-active",
-                          //   completed: "custom-step-icon-completed",
-                          // },
-                        }}
+                        StepIconProps={
+                          {
+                            // classes: {
+                            //   root: "custom-step-icon",
+                            //   active: "custom-step-icon-active",
+                            //   completed: "custom-step-icon-completed",
+                            // },
+                          }
+                        }
                       >
                         {label}
                       </StepLabel>
@@ -403,82 +398,87 @@ export default function BookingForm() {
               </Stepper>
 
               {activeStep === 0 && (
-                <React.Fragment>
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Grid
-                      container
-                      spacing={2}
-                      justifyContent="center"
-                      alignItems="center"
-                      sx={{
-                        paddingBottom: "20px",
-                        paddingTop: "20px",
-                      }}
-                    >
-                      <Containers
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          flexDirection: "column",
-                          alignItems: "center", // Center horizontally
-                          justifyContent: "center", // Center vertically
-                        }}
-                      >
-                        <Typography>Pick a Day and Time</Typography>
-                        <DateCalendar
-                          value={date}
-                          views={["year", "month", "day"]}
-                          onChange={handleDateChange}
-                        />
-                        <div>
-                          <Typography>Select a time slot:</Typography>
-                          <ul
-                            style={{
-                              listStyle: "none",
-                              display: "flex",
-                              margin: 0,
-                              padding: 0,
-                              flexWrap: "wrap", // Add flex-wrap property
-                            }}
-                          >
-                            {timeSlots.map((timeSlot, index) => (
-                              <li
-                                key={index}
-                                style={{
-                                  marginRight: "10px",
-                                  marginLeft: "30px",
-                                  marginBottom: "10px",
-                                }}
-                              >
-                                <Button
-                                  onClick={() =>
-                                    handleStartTimeChange(timeSlot)
-                                  }
-                                >
-                                  {timeSlot}
-                                </Button>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </Containers>
-                      {error && !isDayPicked && (
-                        <Typography variant="caption" color="error">
-                          Please pick a day before proceeding.
-                        </Typography>
-                      )}
-                      {error && !isTimePicked && (
-                        <Typography variant="caption" color="error">
-                          Please pick a time before proceeding.
-                        </Typography>
-                      )}
-                    </Grid>
-                  </Box>
-                </React.Fragment>
+             <React.Fragment>
+             <Box
+               display="flex"
+               justifyContent="center"
+               alignItems="center"
+             >
+               <Grid
+                 container
+                 spacing={2}
+                 justifyContent="center"
+                 alignItems="center"
+                 sx={{
+                   paddingBottom: "20px",
+                   paddingTop: "20px",
+                 }}
+               >
+                 <Containers
+                   style={{
+                     display: "flex",
+                     flexWrap: "wrap",
+                     flexDirection: "column",
+                     alignItems: "center", // Center horizontally
+                     justifyContent: "center", // Center vertically
+                   }}
+                 >
+                   <Typography>Pick a Day and Time</Typography>
+                   <DateCalendar
+                     value={date}
+                     views={["year", "month", "day"]}
+                     onChange={handleDateChange}
+                   />
+                   <div>
+                     <Typography>Select a time slot:</Typography>
+                     <ul
+                       style={{
+                         listStyle: "none",
+                         display: "flex",
+                         flexDirection: "row",
+                         alignItems: "center", // Center horizontally
+                         paddingTop: 10,
+                         margin: 0,
+                         padding: 0,
+                         gap: "10px", // Add gap for spacing between time slots
+                         flexWrap: "wrap", 
+                       }}
+                     >
+                       {timeSlots.map((timeSlot, index) => (
+                         <li
+                           key={index}
+                           style={{
+                             marginBottom: "10px",
+                           }}
+                         >
+                           <Button
+                             onClick={() => handleStartTimeChange(timeSlot)}
+                             style={{
+                               backgroundColor:
+                                 startTime === timeSlot ? focusedColor : "",
+                               color: startTime === timeSlot ? "white" : "",
+                             }}
+                           >
+                             {timeSlot}
+                           </Button>
+                         </li>
+                       ))}
+                     </ul>
+                   </div>
+                 </Containers>
+                 {error && !isDayPicked && (
+                   <Typography variant="caption" color="error">
+                     Please pick a day before proceeding.
+                   </Typography>
+                 )}
+                 {error && !isTimePicked && (
+                   <Typography variant="caption" color="error">
+                     Please pick a time before proceeding.
+                   </Typography>
+                 )}
+               </Grid>
+             </Box>
+           </React.Fragment>
               )}
 
               {activeStep === 1 && (
