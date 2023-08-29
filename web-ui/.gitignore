@@ -1,5 +1,4 @@
-node_modules
-amplify
+# Local Netlify folder
 .netlify
 /functions/node_modules
 /.env

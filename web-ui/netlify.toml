@@ -1,0 +1,10 @@
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[build]
+    functions = "functions"
+
+[[plugins]]
+package = "@netlify/plugin-functions-install-core"

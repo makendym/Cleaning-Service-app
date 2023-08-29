@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -13,52 +13,38 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState } from "react";
-import InputMask from "react-input-mask";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useMutation } from "@apollo/client";
 import { CREATE_BOOKING_MUTATION } from "../graphql";
-import { OutlinedInput, Stack, Chip } from "@mui/material";
+import { Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { makeStyles } from '@mui/styles';
-
-const defaultTheme = createTheme();
+import styled from "styled-components";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import emailjs from "@emailjs/browser";
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
 const focusedColor = "#8C52FF";
-const useStyles = makeStyles({
-  root: {
-    // input label when focused
-    "& label.Mui-focused": {
-      color: focusedColor,
-    },
-    // focused color for input with variant='standard'
-    "& .MuiInput-underline:after": {
-      borderBottomColor: focusedColor,
-    },
-    // focused color for input with variant='filled'
-    "& .MuiFilledInput-underline:after": {
-      borderBottomColor: focusedColor,
-    },
-    // focused color for input with variant='outlined'
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: focusedColor,
-      },
-    },
-  },
-});
 
+const Containers = styled.div`
+  width: 475px;
+  margin: 1em auto;
+  padding: 1em;
+  background-color: #fff;
+  color: #8c52ff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px #00000018;
+  @media (max-width: 520px) {
+    width: 100%;
+  }
+`;
 export default function BookingForm() {
-  const [date, setDate] = useState(null);
-  const [startTime,setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const [date, setDate] = useState();
+  const [startTime, setStartTime] = useState("");
   const [packages, setPackage] = React.useState("");
   const [activeStep, setActiveStep] = React.useState(0);
   const [firstName, setFirstName] = useState("");
@@ -80,19 +66,25 @@ export default function BookingForm() {
   const [error, setError] = useState(false);
   const [kindOfPet, setKindOfPet] = useState("");
   const [notes, setNotes] = useState("");
+  const [isDayPicked, setIsDayPicked] = useState(false);
+  const [isTimePicked, setIsTimePicked] = useState(false);
 
   const steps = [
+    "Choose day and time",
     "Add your information",
     "Create a package",
-    "Choose day and time",
   ];
 
   const handleNext = () => {
     setError(false); // Reset the error state
 
     // Check if the current step has incomplete fields and set the error state accordingly
-    if (
-      activeStep === 0 &&
+    if (activeStep === 0 && !isDayPicked) {
+      setError(true);
+    } else if (activeStep === 0 && !isTimePicked) {
+      setError(true);
+    } else if (
+      activeStep === 1 &&
       (firstName === "" ||
         lastName === "" ||
         email === "" ||
@@ -104,15 +96,15 @@ export default function BookingForm() {
     ) {
       setError(true);
     } else if (
-      activeStep === 1 &&
+      activeStep === 2 &&
       (packages === "" ||
         bedrooms === "" ||
         bathrooms === "" ||
         diningRoom === "" ||
         kitchen === "" ||
         pets === "" ||
-        (pets === "yes" && kindOfPet == "") ||
-        supplies == "")
+        (pets === "yes" && kindOfPet === "") ||
+        supplies === "")
     ) {
       setError(true);
     } else {
@@ -156,6 +148,34 @@ export default function BookingForm() {
       handleSubmit();
     }
   };
+
+  const handleEmailConfirmation = () => {
+    emailjs
+      .send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: "Cleaning Services",
+          to_name: `${firstName + " " + lastName}`,
+          from_email: "makendymidouin99@gmail.com",
+          to_email: email,
+          message:
+            "Your booking has been confirmed! Thank you for booking with us.",
+        },
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+      )
+      .then(
+        (response) => {
+          console.log("EmailJS Response:", response);
+        },
+        (error) => {
+          console.error(error);
+
+          alert("Ahh, something went wrong. Please try again.");
+        }
+      );
+  };
+
   const handleSubmit = async () => {
     const bookingData = {
       createdAt: new Date(),
@@ -163,7 +183,8 @@ export default function BookingForm() {
       last_name: lastName,
       email: email,
       phone_number: phoneNumber,
-      booking_date: date ? date.toDate() : null,
+      booking_date: date ? date.startOf("day").toDate() : null,
+      booking_time: startTime,
       address: address,
       city: city,
       state: state,
@@ -189,10 +210,10 @@ export default function BookingForm() {
       });
 
       console.log("Created Booking:", createBooking);
-
+      handleEmailConfirmation();
+      console.log("Email confirmation sent!");
       setDate(null);
-      setStartTime(null);
-      setEndTime(null);
+      setStartTime("");
       setPackage("");
       setFirstName("");
       setLastName("");
@@ -213,22 +234,10 @@ export default function BookingForm() {
       setNotes("");
 
       setBookingSubmitted(true);
-    } catch (error) {
-      console.error("Error creating booking:", error);
+    } catch (e) {
+      console.error("Error creating booking:", e);
     }
   };
-
-  const handleDateChange = (date) => {
-    setDate(date);
-  };
-
-  const handleStartTimeChange = (startTime) => {
-      setStartTime(startTime);
-  }
-  
-  const handleEndTimeChange = (endTime) => {
-    setEndTime(endTime);
-}
 
   // Define your custom theme
   const theme = createTheme({
@@ -275,8 +284,23 @@ export default function BookingForm() {
       MuiTextField: {
         styleOverrides: {
           root: {
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: focusedColor,
+            // Input label when focused
+            "& label.Mui-focused": {
+              color: focusedColor,
+            },
+            // Focused color for input with variant='standard'
+            "& .MuiInput-underline:after": {
+              borderBottomColor: focusedColor,
+            },
+            // Focused color for input with variant='filled'
+            "& .MuiFilledInput-underline:after": {
+              borderBottomColor: focusedColor,
+            },
+            // Focused color for input with variant='outlined'
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: focusedColor,
+              },
             },
           },
         },
@@ -284,7 +308,42 @@ export default function BookingForm() {
     },
   });
 
-  const classes = useStyles();
+  const [timeSlots, setTimeSlots] = useState([]);
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
+
+    // Replace this logic with your actual implementation to generate time slots
+    const newTimeSlots = generateTimeSlots(newDate);
+    setTimeSlots(newTimeSlots);
+
+    setIsDayPicked(true);
+  };
+
+  // Replace this function with your logic to generate time slots
+  const generateTimeSlots = (dates) => {
+    const dayOfWeek = dates.day(); // Get the day of the week (0 for Sunday, 1 for Monday, ...)
+
+    // Define time slots for each day of the week
+    const dayTimeSlots = [
+      [], // Sunday (no time slots)
+      ["10:00 AM", "11:00 AM", "12:00 PM"], // Monday
+      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Tuesday
+      ["10:00 AM", "11:00 AM", "12:00 PM"], // Wednesday (no time slots)
+      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Thursday
+      ["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"], // Friday (no time slots)
+      [], // Saturday (no time slots)
+    ];
+
+    return dayTimeSlots[dayOfWeek];
+  };
+
+  const handleStartTimeChange = (time) => {
+    setStartTime(time);
+    const selectedDateTime = date.format("MMM DD, YYYY") + " " + startTime;
+    console.log("Selected Date and Time:", selectedDateTime);
+    setIsTimePicked(true);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -321,13 +380,15 @@ export default function BookingForm() {
                     <Step key={label} {...stepProps}>
                       <StepLabel
                         {...labelProps}
-                        StepIconProps={{
-                          classes: {
-                            root: "custom-step-icon",
-                            active: "custom-step-icon-active",
-                            completed: "custom-step-icon-completed",
-                          },
-                        }}
+                        StepIconProps={
+                          {
+                            // classes: {
+                            //   root: "custom-step-icon",
+                            //   active: "custom-step-icon-active",
+                            //   completed: "custom-step-icon-completed",
+                            // },
+                          }
+                        }
                       >
                         {label}
                       </StepLabel>
@@ -337,6 +398,90 @@ export default function BookingForm() {
               </Stepper>
 
               {activeStep === 0 && (
+             <React.Fragment>
+             <Box
+               display="flex"
+               justifyContent="center"
+               alignItems="center"
+             >
+               <Grid
+                 container
+                 spacing={2}
+                 justifyContent="center"
+                 alignItems="center"
+                 sx={{
+                   paddingBottom: "20px",
+                   paddingTop: "20px",
+                 }}
+               >
+                 <Containers
+                   style={{
+                     display: "flex",
+                     flexWrap: "wrap",
+                     flexDirection: "column",
+                     alignItems: "center", // Center horizontally
+                     justifyContent: "center", // Center vertically
+                   }}
+                 >
+                   <Typography>Pick a Day and Time</Typography>
+                   <DateCalendar
+                     value={date}
+                     views={["year", "month", "day"]}
+                     onChange={handleDateChange}
+                   />
+                   <div>
+                     <Typography>Select a time slot:</Typography>
+                     <ul
+                       style={{
+                         listStyle: "none",
+                         display: "flex",
+                         flexDirection: "row",
+                         alignItems: "center", // Center horizontally
+                         paddingTop: 10,
+                         margin: 0,
+                         padding: 0,
+                         gap: "10px", // Add gap for spacing between time slots
+                         flexWrap: "wrap", 
+                       }}
+                     >
+                       {timeSlots.map((timeSlot, index) => (
+                         <li
+                           key={index}
+                           style={{
+                             marginBottom: "10px",
+                           }}
+                         >
+                           <Button
+                             onClick={() => handleStartTimeChange(timeSlot)}
+                             style={{
+                               backgroundColor:
+                                 startTime === timeSlot ? focusedColor : "",
+                               color: startTime === timeSlot ? "white" : "",
+                             }}
+                           >
+                             {timeSlot}
+                           </Button>
+                         </li>
+                       ))}
+                     </ul>
+                   </div>
+                 </Containers>
+                 {error && !isDayPicked && (
+                   <Typography variant="caption" color="error">
+                     Please pick a day before proceeding.
+                   </Typography>
+                 )}
+                 {error && !isTimePicked && (
+                   <Typography variant="caption" color="error">
+                     Please pick a time before proceeding.
+                   </Typography>
+                 )}
+               </Grid>
+             </Box>
+           </React.Fragment>
+              )}
+
+              {activeStep === 1 && (
                 <React.Fragment>
                   <Grid
                     container
@@ -345,7 +490,6 @@ export default function BookingForm() {
                   >
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         name="firstName"
                         required
                         fullWidth
@@ -364,7 +508,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="lastName"
@@ -374,7 +517,7 @@ export default function BookingForm() {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
-                      {error && lastName == "" && (
+                      {error && lastName === "" && (
                         <Typography variant="caption" color="error">
                           Please enter your last name.
                         </Typography>
@@ -382,7 +525,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="email"
@@ -400,7 +542,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         name="phoneNumber"
@@ -419,7 +560,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="address"
@@ -437,7 +577,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="city"
@@ -455,7 +594,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="state"
@@ -473,7 +611,6 @@ export default function BookingForm() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        className={classes.root}
                         required
                         fullWidth
                         id="zip"
@@ -493,7 +630,7 @@ export default function BookingForm() {
                 </React.Fragment>
               )}
 
-              {activeStep === 1 && (
+              {activeStep === 2 && !bookingSubmitted ? (
                 <React.Fragment>
                   <Grid
                     container
@@ -523,7 +660,6 @@ export default function BookingForm() {
                     <Grid item xs={12} sm={6}>
                       <InputLabel> Number of bedrooms</InputLabel>
                       <TextField
-                        className={classes.root}
                         required
                         error={error && bedrooms === ""}
                         fullWidth
@@ -547,7 +683,6 @@ export default function BookingForm() {
                     <Grid item xs={12} sm={6}>
                       <InputLabel> Number of bathrooms</InputLabel>
                       <TextField
-                        className={classes.root}
                         required
                         error={error && bathrooms === ""}
                         fullWidth
@@ -573,7 +708,6 @@ export default function BookingForm() {
                         Type of Kitchen
                       </InputLabel>
                       <Select
-                        className={classes.select}
                         error={error && kitchen === ""}
                         labelId="demo-simple-select-label"
                         id="kitchen"
@@ -637,14 +771,12 @@ export default function BookingForm() {
                       {pets === "yes" && (
                         <TextField
                           required
-                          error={error && kindOfPet === ""}
                           fullWidth
                           id="kindOfPet"
                           name="kindOfPet"
                           variant="outlined"
                           placeholder="Enter the type of pet"
                           value={kindOfPet}
-                          variant="outlined"
                           helperText={
                             error && kindOfPet === ""
                               ? "Please enter the type of pet"
@@ -717,7 +849,6 @@ export default function BookingForm() {
                     <Grid item xs={12}>
                       <InputLabel> Notes</InputLabel>
                       <TextField
-                        className={classes.root}
                         placeholder="Leave detailed instrutions"
                         variant="outlined"
                         value={notes}
@@ -728,55 +859,6 @@ export default function BookingForm() {
                     </Grid>
                   </Grid>
                 </React.Fragment>
-              )}
-
-              {activeStep === 2 && !bookingSubmitted ? (
-                <React.Fragment>
-                <Box display="flex" justifyContent="center" alignItems="center"  >
-                  <Grid
-                    container
-                    spacing={2}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      paddingBottom: "20px",
-                      paddingTop: "20px",
-                    }}
-                  >
-                    <Grid item xs={12}>
-                      <DatePicker
-                        label="Booking Date"
-                        required
-                        fullWidth
-                        value={date}
-                        onChange={handleDateChange}
-                        variant="outlined"
-                        sx={{ width: "100%", justifyContent: "center" }} // Add this style to center and increase width
-                      />
-                      {error && date === null && (
-                        <Typography variant="caption" color="error">
-                          Please enter the booking date.
-                        </Typography>
-                      )}
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TimePicker fullWidth label="Start time"
-                      required
-                      value={startTime}
-                      onChange={handleStartTimeChange}
-                      variant="outlined" />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TimePicker fullWidth label="End time"
-                      required
-                      value={endTime}
-                      onChange={handleEndTimeChange}
-                      variant="outlined" />
-                    </Grid>
-                  </Grid>
-                </Box>
-              </React.Fragment>
-              
               ) : null}
 
               {bookingSubmitted && (

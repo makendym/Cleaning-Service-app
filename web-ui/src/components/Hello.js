@@ -1,5 +1,4 @@
 import * as React from "react";
-import { gql, useQuery } from "@apollo/client";
 import {
   createTheme,
   ThemeProvider,
@@ -7,15 +6,12 @@ import {
 } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom"; // Import the Link component from react-router-dom
 import Box from "@mui/material/Box";
 import cleaningMirror from "../assets/cleaningMirror.jpg";
 import cleaningSink from "../assets/cleaningSink.jpg";
 import star from "../assets/icons-star.png";
-import profile from "../assets/Profile.jpg";
 import { useNavigate } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -23,11 +19,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import EmailIcon from "@mui/icons-material/Email";
-const HELLO_QUERY = gql`
-  query Query($name: String) {
-    hello(name: $name)
-  }
-`;
+
 
 let customTheme = createTheme({
   typography: {
@@ -42,14 +34,6 @@ export default function Hello() {
     navigate("/bookingForm");
   };
 
-  const { data, loading, error } = useQuery(HELLO_QUERY, {
-    variables: { name: "Brythanie" },
-  });
-
-  if (loading) return <Typography>Loading...</Typography>;
-  if (error) {
-    console.error("HELLO_QUERY error", error);
-  }
 
   return (
     <ThemeProvider theme={customTheme}>
@@ -579,11 +563,6 @@ export default function Hello() {
         </Box>
       </Box>
       <Divider variant="middle" />
-      <Box>
-        {loading && "Loading..."}
-        {error && "Error (check console logs)"}
-        {!loading && !error}
-      </Box>
     </ThemeProvider>
   );
 }

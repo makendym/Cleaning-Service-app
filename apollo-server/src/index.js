@@ -9,9 +9,10 @@ const server = new ApolloServer({typeDefs, resolvers});
 const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
 });
-
+const pass = "jDhifHm3xdBcE7Qi"
+const mongoDB = `mongodb+srv://midouinmakendy:${pass}@cluster0.05pe0za.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.set('strictQuery', true);
-const db = await mongoose.connect("mongodb://localhost:27017/marn", {
+const db = await mongoose.connect(mongoDB, {
     useNewUrlParser: true,
 });
 

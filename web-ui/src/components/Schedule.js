@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { gql, useQuery } from '@apollo/client';
+import {useQuery } from '@apollo/client';
 import { Typography } from "@mui/material";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
