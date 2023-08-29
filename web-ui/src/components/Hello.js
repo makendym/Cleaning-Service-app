@@ -128,6 +128,7 @@ export default function Hello() {
             autoPlay
             loop
             muted
+            playsInline 
             style={{
               position: "absolute",
               top: "50%",
@@ -545,7 +546,7 @@ export default function Hello() {
             style={{
               maxWidth: "100%",
               width: "100%", // Set the width relative to the viewport width
-              heixsght: "auto",
+              height: "auto",
               borderRadius: "15px",
             }}xs
           />
