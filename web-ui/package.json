@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.17",
     "@date-io/dayjs": "^2.16.0",
+    "@emailjs/browser": "^3.10.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.5",

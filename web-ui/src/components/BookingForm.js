@@ -23,6 +23,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import emailjs from "@emailjs/browser";
 
 const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
 const focusedColor = "#8C52FF";
@@ -149,6 +150,38 @@ export default function BookingForm() {
       handleSubmit();
     }
   };
+
+  const handleEmailConfirmation = () => { 
+    emailjs
+      .send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: "Cleaning Services",
+          to_name: `${firstName + " " + lastName}`,
+          from_email: "makendymidouin99@gmail.com",
+          to_email: email,
+          message: "Your booking has been confirmed! Thank you for booking with us.",
+        },
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+      )
+      .then(
+        (response) => {
+          console.log("EmailJS Response:", response);
+        },
+        (error) => {
+          console.error(error);
+
+          alert("Ahh, something went wrong. Please try again.");
+        }
+      );
+  };
+
+
+
+
+
+
   const handleSubmit = async () => {
     const bookingData = {
       createdAt: new Date(),
@@ -183,7 +216,8 @@ export default function BookingForm() {
       });
 
       console.log("Created Booking:", createBooking);
-
+      handleEmailConfirmation();
+      console.log("Email confirmation sent!");
       setDate(null);
       setStartTime("");
       setPackage("");
