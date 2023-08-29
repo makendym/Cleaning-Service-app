@@ -18,7 +18,7 @@ const BookingSchema = new mongoose.Schema({
   kindOfPet:{type: String,},
   add_ons: { type: [String] },
   notes:{type: String,},
-  booking_date:{type: Date, required: true },
+  booking_date:{type: Date},
   booking_time:{type: String},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
