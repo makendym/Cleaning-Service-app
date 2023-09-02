@@ -40,30 +40,55 @@ export default function Footer() {
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "column",
-                alignItems: "center", // Center the content horizontally
+                flexDirection: "row", // Display links in a row
+                alignItems: "center",
                 gap: "20px",
-                [theme.breakpoints.up("md")]: {
-                  flexDirection: "row", // Align items in a row on larger screens
-                  justifyContent: "center", // Center horizontally on larger screens
+                justifyContent: "center",
+                [theme.breakpoints.down("md")]: {
+                  flexDirection: "column", // Align links in a column on smaller screens
                 },
               }}
             >
-              <Box>
-                <Typography variant="body1">About Us</Typography>
-              </Box>
-              <Box>
-                <Typography variant="body1">Terms &amp; Conditions</Typography>
-              </Box>
-              <Box>
-                <Typography variant="body1">Privacy Policy</Typography>
-              </Box>
-              <Box>
-                <Typography variant="body1">Reviews</Typography>
-              </Box>
-              <Box>
-                <Typography variant="body1">Contact Us</Typography>
-              </Box>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: { xs: "14px", md: "inherit" }, // Set smaller font size for xs screens
+                }}
+              >
+                About Us
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: { xs: "14px", md: "inherit" }, // Set smaller font size for xs screens
+                }}
+              >
+                Terms &amp; Conditions
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: { xs: "14px", md: "inherit" }, // Set smaller font size for xs screens
+                }}
+              >
+                Privacy Policy
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: { xs: "14px", md: "inherit" }, // Set smaller font size for xs screens
+                }}
+              >
+                Reviews
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: { xs: "14px", md: "inherit" }, // Set smaller font size for xs screens
+                }}
+              >
+                Contact Us
+              </Typography>
             </Box>
 
             <Divider style={{ paddingTop: "20px" }} />
@@ -72,7 +97,7 @@ export default function Footer() {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center", // Center the content horizontally
+                alignItems: "center",
                 paddingTop: "20px",
               }}
             >
@@ -85,7 +110,7 @@ export default function Footer() {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center", // Center the content horizontally
+                alignItems: "center",
                 paddingTop: "20px",
                 marginTop: "auto",
               }}

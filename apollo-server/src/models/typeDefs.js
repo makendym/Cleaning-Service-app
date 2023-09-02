@@ -33,7 +33,6 @@ export const typeDefs = gql`
     bedrooms: Int
     bathrooms: Int
     kitchen: String
-    dining_room: String
     supplies: String
     kindOfPet: String
     add_ons: [String]
@@ -55,7 +54,6 @@ export const typeDefs = gql`
     bedrooms: Int
     bathrooms: Int
     kitchen: String
-    dining_room: String
     supplies: String
     kindOfPet: String
     add_ons: [String]

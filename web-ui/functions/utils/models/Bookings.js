@@ -13,7 +13,6 @@ const BookingSchema = new mongoose.Schema({
   bedrooms: { type: Number, required: true },
   bathrooms: { type: Number, required: true },
   kitchen: { type: String, required: true },
-  dining_room: { type: String, required: true },
   supplies:{type: String,},
   kindOfPet:{type: String,},
   add_ons: { type: [String] },

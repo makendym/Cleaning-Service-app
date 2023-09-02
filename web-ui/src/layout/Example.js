@@ -9,6 +9,7 @@ import { Link } from "react-router-dom"; // Import the Link component from react
 import Box from "@mui/material/Box";
 import logo from "../assets/Quick&Fast-Logo.png";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 // #CE6CE6 - purple
 const customTheme = createTheme({
   typography: {
@@ -19,8 +20,10 @@ const customTheme = createTheme({
 export default function Example() {
   const navigate = useNavigate();
   const BookingPage = () => {
-    navigate("/bookingForm");
+    navigate("/bookingForm", { state: { name: "Regular" } });
   };
+
+  const location = useLocation();
 
   const [isTransparent, setIsTransparent] = useState(true);
 
@@ -120,14 +123,16 @@ export default function Example() {
               }}
             >
               <Box sx={{ my: 1, mx: 1 }}>
-                <Button
-                  onClick={BookingPage}
-                  style={{ color: "#8C52FF" }}
-                  color="inherit"
-                  variant="outlined"
-                >
-                  Book Now
-                </Button>
+                {location.pathname === "/bookingForm" ? null : (
+                  <Button
+                    onClick={BookingPage}
+                    style={{ color: "#8C52FF" }}
+                    color="inherit"
+                    variant="outlined"
+                  >
+                    Book Now
+                  </Button>
+                )}
               </Box>
             </Box>
           </Toolbar>

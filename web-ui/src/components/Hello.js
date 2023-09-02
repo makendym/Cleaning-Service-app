@@ -16,8 +16,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import PersonIcon from "@mui/icons-material/Person";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
-import EmailIcon from "@mui/icons-material/Email";
+import ContactForm from "../components/contactForm";
+
 let customTheme = createTheme({
   typography: {
     fontFamily: "'Poppins', sans-serif",
@@ -27,10 +27,17 @@ let customTheme = createTheme({
 customTheme = responsiveFontSizes(customTheme);
 export default function Hello() {
   const navigate = useNavigate();
-  const BookingPage = () => {
-    navigate("/bookingForm");
+
+  const RegularBookingPage = () => {
+    navigate("/bookingForm", { state: { name: "Regular" } });
   };
 
+  const CustomizedBookingPage = () => {
+    navigate("/bookingForm", { state: { id: 1, name: "Customized" } });
+  };
+  const MoveBookingPage = () => {
+    navigate("/bookingForm", { state: { id: 1, name: "Move In/Out" } });
+  };
   return (
     <ThemeProvider theme={customTheme}>
       <GlobalStyles
@@ -77,7 +84,7 @@ export default function Hello() {
               color="white"
               sx={{ fontWeight: "bold", mb: 2 }}
             >
-                Expert home cleaning services.
+              Expert home cleaning services.
             </Typography>
             <Typography variant="subtitle1" color="white" sx={{ mb: 2 }}>
               Get a specific room or full home cleaned at times that work best
@@ -93,7 +100,7 @@ export default function Hello() {
               variant="contained"
               color="primary"
               size="large"
-              onClick={BookingPage}
+              onClick={RegularBookingPage}
             >
               Book Now
             </Button>
@@ -167,7 +174,7 @@ export default function Hello() {
           sx={{
             display: "flex",
             alignItems: "center",
-            flexDirection: "column",
+            flexDirection: "row",
             flexGrow: 1,
           }}
         >
@@ -197,15 +204,15 @@ export default function Hello() {
           >
             <Button
               sx={{
-                width: "100%",
-                height: { xs: "100px", md: "200px" },
+                width: "100%", // Button takes the full width on all screen sizes
+                height: { xs: "70px", md: "170px" },
                 borderRadius: "15px",
                 backgroundColor: "#f0ecfc",
               }}
               variant="outlined"
               color="inherit"
               size="large"
-              onClick={BookingPage}
+              onClick={RegularBookingPage}
             >
               <Box
                 sx={{
@@ -224,13 +231,17 @@ export default function Hello() {
                   }}
                 >
                   <Typography
-                    variant="h6"
+                    variant={{ xs: "subtitle1", md: "h6" }}
                     color="inherit"
                     sx={{ fontWeight: "bold", mb: 1 }}
                   >
-                    Regular Cleaning
+                    Regular cleaning
                   </Typography>
-                  <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
+                  <Typography
+                    variant={{ xs: "caption", md: "body1" }}
+                    color="inherit"
+                    sx={{ mb: 1 }}
+                  >
                     Starts at $22/hour
                   </Typography>
                 </Box>
@@ -249,15 +260,15 @@ export default function Hello() {
           >
             <Button
               sx={{
-                width: "100%",
-                height: { xs: "100px", md: "200px" },
+                width: "100%", // Button takes the full width on all screen sizes
+                height: { xs: "70px", md: "170px" },
                 borderRadius: "15px",
                 backgroundColor: "#f0ecfc",
               }}
               variant="outlined"
               color="inherit"
               size="large"
-              onClick={BookingPage}
+              onClick={CustomizedBookingPage}
             >
               <Box
                 sx={{
@@ -276,13 +287,73 @@ export default function Hello() {
                   }}
                 >
                   <Typography
-                    variant="h6"
+                    variant={{ xs: "subtitle1", md: "h6" }}
+                    color="inherit"
+                    sx={{ fontWeight: "bold", mb: 1 }}
+                  >
+                    Customized cleaning
+                  </Typography>
+                  <Typography
+                    variant={{ xs: "caption", md: "body1" }}
+                    color="inherit"
+                    sx={{ mb: 1 }}
+                  >
+                    Starts at $22/hour
+                  </Typography>
+                </Box>
+                <ArrowForwardIosIcon />
+              </Box>
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              mb: { xs: 2, md: 0 },
+              mr: { xs: 0, md: 2 },
+            }}
+          >
+            <Button
+              sx={{
+                width: "100%", // Button takes the full width on all screen sizes
+                height: { xs: "70px", md: "170px" },
+                borderRadius: "15px",
+                backgroundColor: "#f0ecfc",
+              }}
+              variant="outlined"
+              color="inherit"
+              size="large"
+              onClick={MoveBookingPage}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexGrow: 1,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 1,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography
+                    variant={{ xs: "subtitle1", md: "h6" }}
                     color="inherit"
                     sx={{ fontWeight: "bold", mb: 1 }}
                   >
                     Move in/ out cleaning
                   </Typography>
-                  <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
+                  <Typography
+                    variant={{ xs: "caption", md: "body1" }}
+                    color="inherit"
+                    sx={{ mb: 1 }}
+                  >
                     Starts at $32/hour
                   </Typography>
                 </Box>
@@ -582,60 +653,8 @@ export default function Hello() {
             margin: "0 auto", // Center horizontally
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              flexGrow: 1,
-              padding: "20px",
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <EmailIcon />
-            </Box>
-            <Typography
-              variant="body1"
-              color="inherit"
-              sx={{ mb: 1, paddingTop: "20px", textAlign: "center" }}
-            >
-              <Typography
-                variant="body1"
-                color="inherit"
-                sx={{ fontWeight: "bold", mb: 1 }}
-              >
-                Email us:
-              </Typography>
-              Brythanie.Despagne20@gmail.com
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              flexGrow: 1,
-              padding: "20px",
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <PhoneInTalkIcon />
-            </Box>
-            <Typography
-              variant="body1"
-              color="inherit"
-              sx={{ mb: 1, textAlign: "center" }}
-            >
-              <Typography
-                variant="body1"
-                color="inherit"
-                sx={{ fontWeight: "bold", mb: 1 }}
-              >
-                Call us:
-              </Typography>
-              845-428-3520
-            </Typography>
-          </Box>
+
+            <ContactForm />
         </Box>
       </Box>
 

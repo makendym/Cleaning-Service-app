@@ -21,6 +21,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
+    "framer-motion": "^10.16.2",
     "graphql": "^16.7.1",
     "graphql-scalars": "^1.22.2",
     "moment": "^2.29.4",

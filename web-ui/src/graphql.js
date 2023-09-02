@@ -27,7 +27,6 @@ mutation CreateBookingMutation($booking: BookingInput!) {
       bedrooms
       bathrooms
       kitchen
-      dining_room
       supplies
       kindOfPet
       add_ons
@@ -67,7 +66,6 @@ export const BOOKINGS_QUERY = gql`
             bedrooms
             bathrooms
             kitchen
-            dining_room
             supplies
             kindOfPet
             add_ons

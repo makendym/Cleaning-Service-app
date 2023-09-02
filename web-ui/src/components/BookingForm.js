@@ -24,8 +24,9 @@ import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import emailjs from "@emailjs/browser";
+import { useLocation } from "react-router-dom";
 
-const names = ["Laundry and Folding", "Oven", "Fridge", "Baseboards"];
+const names = ["Laundry and Folding", "Pressing","Oven", "Fridge", "Baseboards"];
 const focusedColor = "#8C52FF";
 
 const Containers = styled.div`
@@ -43,9 +44,12 @@ const Containers = styled.div`
   }
 `;
 export default function BookingForm() {
+  const location = useLocation();
+
   const [date, setDate] = useState(null);
   const [startTime, setStartTime] = useState("");
-  const [packages, setPackage] = React.useState("");
+
+  const [packages, setPackage] = useState(location.state.name || "Regular");
   const [activeStep, setActiveStep] = React.useState(0);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -58,7 +62,6 @@ export default function BookingForm() {
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
   const [kitchen, setKitchen] = useState("");
-  const [diningRoom, setDiningRoom] = useState("");
   const [bookingSubmitted, setBookingSubmitted] = useState(false);
   const [addOns, setAddOns] = useState([]);
   const [pets, setPets] = useState("");
@@ -100,7 +103,6 @@ export default function BookingForm() {
       (packages === "" ||
         bedrooms === "" ||
         bathrooms === "" ||
-        diningRoom === "" ||
         kitchen === "" ||
         pets === "" ||
         (pets === "yes" && kindOfPet === "") ||
@@ -130,9 +132,6 @@ export default function BookingForm() {
   const handleKitchenChange = (event) => {
     setKitchen(event.target.value);
   };
-  const handleDiningChange = (event) => {
-    setDiningRoom(event.target.value);
-  };
 
   const handlePetsChange = (event) => {
     setPets(event.target.value);
@@ -142,7 +141,16 @@ export default function BookingForm() {
   };
 
   const finalStep = () => {
-    if (activeStep === 2 && date === null) {
+    if (
+      activeStep === 2 &&
+      (packages === "" ||
+        bedrooms === "" ||
+        bathrooms === "" ||
+        kitchen === "" ||
+        pets === "" ||
+        (pets === "yes" && kindOfPet === "") ||
+        supplies === "")
+    ) {
       setError(true);
     } else {
       handleSubmit();
@@ -193,7 +201,6 @@ export default function BookingForm() {
       bedrooms: parseInt(bedrooms, 10),
       bathrooms: parseInt(bathrooms, 10),
       kitchen: kitchen,
-      dining_room: diningRoom,
       supplies: supplies,
       kindOfPet: kindOfPet,
       add_ons: addOns,
@@ -210,8 +217,6 @@ export default function BookingForm() {
       });
 
       console.log("Created Booking:", createBooking);
-      handleEmailConfirmation();
-      console.log("Email confirmation sent!");
       setDate(null);
       setStartTime("");
       setPackage("");
@@ -226,7 +231,6 @@ export default function BookingForm() {
       setBedrooms("");
       setZip("");
       setKitchen("");
-      setDiningRoom("");
       setSupplies("");
       setKindOfPet("");
       setPets("");
@@ -234,9 +238,14 @@ export default function BookingForm() {
       setNotes("");
 
       setBookingSubmitted(true);
+      
+      handleEmailConfirmation();
+      console.log("Email confirmation sent!");
     } catch (e) {
       console.error("Error creating booking:", e);
     }
+
+
   };
 
   // Define your custom theme
@@ -487,30 +496,34 @@ export default function BookingForm() {
                               flexWrap: "wrap",
                             }}
                           >
-                            {timeSlots.map((timeSlot, index) => (
-                              <li
-                                key={index}
-                                style={{
-                                  marginBottom: "10px",
-                                }}
-                              >
-                                <Button
-                                  onClick={() =>
-                                    handleStartTimeChange(timeSlot)
-                                  }
+                            {timeSlots.length === 0 ? (
+                              <p>No time slots available</p>
+                            ) : (
+                              timeSlots.map((timeSlot, index) => (
+                                <li
+                                  key={index}
                                   style={{
-                                    backgroundColor:
-                                      startTime === timeSlot
-                                        ? focusedColor
-                                        : "",
-                                    color:
-                                      startTime === timeSlot ? "white" : "",
+                                    marginBottom: "10px",
                                   }}
                                 >
-                                  {timeSlot}
-                                </Button>
-                              </li>
-                            ))}
+                                  <Button
+                                    onClick={() =>
+                                      handleStartTimeChange(timeSlot)
+                                    }
+                                    style={{
+                                      backgroundColor:
+                                        startTime === timeSlot
+                                          ? focusedColor
+                                          : "",
+                                      color:
+                                        startTime === timeSlot ? "white" : "",
+                                    }}
+                                  >
+                                    {timeSlot}
+                                  </Button>
+                                </li>
+                              ))
+                            )}
                           </ul>
                         </div>
                       </Containers>
@@ -696,6 +709,7 @@ export default function BookingForm() {
                         variant="outlined"
                         fullWidth
                       >
+                        <MenuItem value={"Regular"}>Regular</MenuItem>
                         <MenuItem value={"Customized"}>Customized</MenuItem>
                         <MenuItem value={"Move In/Out"}>Move In/Out</MenuItem>
                       </Select>
@@ -740,8 +754,9 @@ export default function BookingForm() {
                         type="number"
                         value={bathrooms}
                         inputProps={{
-                          min: 1, // Minimum value
+                          min: 0, // Minimum value
                           max: 5, // Maximum value
+                          step: ".5" 
                         }}
                         helperText={
                           error && bedrooms === ""
@@ -768,28 +783,6 @@ export default function BookingForm() {
                         <MenuItem value={"Non Kosher"}>Non Kosher</MenuItem>
                       </Select>
                       {error && kitchen === "" && (
-                        <Typography variant="caption" color="error">
-                          Please enter an option.
-                        </Typography>
-                      )}
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <InputLabel id="demo-simple-select-label">
-                        Include dining room
-                      </InputLabel>
-                      <Select
-                        error={error && diningRoom === ""}
-                        labelId="demo-simple-select-label"
-                        id="diningRoom"
-                        value={diningRoom}
-                        onChange={handleDiningChange}
-                        variant="outlined"
-                        fullWidth
-                      >
-                        <MenuItem value={"yes"}>Yes</MenuItem>
-                        <MenuItem value={"no"}>No</MenuItem>
-                      </Select>
-                      {error && diningRoom === "" && (
                         <Typography variant="caption" color="error">
                           Please enter an option.
                         </Typography>
@@ -834,7 +827,7 @@ export default function BookingForm() {
                         />
                       )}
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12}>
                       <InputLabel id="demo-simple-select-label">
                         Have Supplies?
                       </InputLabel>
@@ -952,7 +945,7 @@ export default function BookingForm() {
                   </React.Fragment>
 
                   {activeStep === steps.length - 1 ? (
-                    <Button onClick={finalStep}>Book Appointment</Button>
+                    <Button onClick={finalStep} disabled={bookingSubmitted}>Book Appointment</Button>
                   ) : (
                     <Button onClick={handleNext}>Next</Button>
                   )}
