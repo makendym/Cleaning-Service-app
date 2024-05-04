@@ -1,22 +1,14 @@
 import * as React from "react";
-import {
-  createTheme,
-  ThemeProvider,
-  responsiveFontSizes,
-} from "@mui/material/styles";
-import GlobalStyles from "@mui/material/GlobalStyles";
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import cleaningSink from "../assets/cleaningSink.jpg";
-import star from "../assets/icons-star.png";
+import starIcon from "../assets/icons-star.png";
 import { useNavigate } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import PersonIcon from "@mui/icons-material/Person";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import ContactForm from "../components/contactForm";
+import { createTheme, ThemeProvider,responsiveFontSizes, GlobalStyles, Box, Typography, Button, Divider, Grid,  useTheme, useMediaQuery } from '@mui/material';
+
 
 let customTheme = createTheme({
   typography: {
@@ -24,607 +16,236 @@ let customTheme = createTheme({
   },
 });
 
+const VideoBackground = ({ src }) => {
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+        overflow: 'hidden',
+      }}
+    >
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 'auto',
+          height: '100%',
+          minWidth: '100%',
+          objectFit: 'cover',
+          opacity: 0.8,
+        }}
+        src={src}
+      />
+    </Box>
+  );
+};
 customTheme = responsiveFontSizes(customTheme);
 export default function Hello() {
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+
   const navigate = useNavigate();
 
   const RegularBookingPage = () => {
-    navigate("/bookingForm", { state: { name: "Regular" } });
+    navigate("/bookingForm", { state: { name: "Home cleaning" } });
   };
 
-  const CustomizedBookingPage = () => {
-    navigate("/bookingForm", { state: { id: 1, name: "Customized" } });
+  const RentalBookingPage = () => {
+    navigate("/bookingForm", { state: { id: 1, name: "Rental Properties Cleaning" } });
   };
   const MoveBookingPage = () => {
     navigate("/bookingForm", { state: { id: 1, name: "Move In/Out" } });
   };
+
+  const text = `At PurpleGlow, we believe in the power of a personal touch. "Elevate Your Clean with a Touch of Purple" is not just our slogan; it's our promise to you. It encapsulates our mission to provide an elite service that leaves your spaces not only sparkling clean but also imbued with a sense of tranquility and luxury that only PurpleGlow can offer.`;
+  const text1 = `Book with PurpleGlow Cleaning Services today and step into a world where cleanliness meets luxury. Let us transform your environment into a haven of peace and purity, where every detail is taken care of, and all that's left for you to do is enjoy the PurpleGlow difference. Experience the ultimate in home and office cleaning—experience the PurpleGlow effect.`;
+
   return (
     <ThemeProvider theme={customTheme}>
+      {/* expert home section */}
       <GlobalStyles
         styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
       />
       <Box
         sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "center", md: "flex-start" },
-          flexGrow: 1,
-          padding: "20px",
-          position: "relative",
+          position: 'relative',
+          height: '40vh',
+          overflow: 'hidden',
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 1,
-            paddingRight: { xs: "0px", md: "10px" },
-            textAlign: { xs: "center", md: "left" },
-            marginBottom: { xs: "20px", md: "0px" },
-            alignItems: { xs: "center", md: "flex-start" },
-            position: "relative",
-            zIndex: 1,
-          }}
+        <VideoBackground src="https://d3lh4iw97b9uun.cloudfront.net/vaccum.mp4" />
+        
+        <Grid
+          container
+          sx={{ zIndex: 1, position: 'relative', height: '100%', px: 2 }}
+          alignItems="center"
+          justifyContent="center"
         >
-          <Box
+          <Grid item xs={12}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              flexGrow: 1,
-              paddingRight: { xs: "0px", md: "10px" },
-              textAlign: { xs: "center", md: "left" },
-              marginBottom: { xs: "20px", md: "0px" },
-              alignItems: { xs: "center", md: "flex-start" },
-              position: "relative", // Add relative positioning
-              zIndex: 1, // Set a higher z-index to ensure text is on top
+              textAlign: { xs: 'center', md: 'left' },
+              maxWidth: 'lg', // Sets a maximum width for large screens
+              mx: 'auto' // Centers the grid item within the container
             }}
           >
-            <Typography
-              variant="h2"
-              color="white"
-              sx={{ fontWeight: "bold", mb: 2 }}
-            >
-              Expert home cleaning services.
+            <Typography variant="h2" color="white" sx={{ fontWeight: 'bold', mb: 2 }}>
+              Expert Home Cleaning Services
+            </Typography>
+            {/* <Typography variant="subtitle1" color="white" sx={{ mb: 1 }}>
+              Phone number: TBD
             </Typography>
             <Typography variant="subtitle1" color="white" sx={{ mb: 2 }}>
-              Get a specific room or full home cleaned at times that work best
-              for you.
-            </Typography>
+              Email: TBD
+            </Typography> */}
             <Button
-              style={{
-                backgroundColor: "#8C52FF",
-                width: "140px",
-                alignSelf: { xs: "center", md: "flex-start" },
-                marginBottom: "10px",
+              onClick={RegularBookingPage}
+              sx={{ 
+                backgroundColor: "#8C52FF", 
+                '&:hover': { backgroundColor: "#7A45E5" }, 
+                color: 'white', 
+                mt: 2, 
+                textTransform: 'none',
               }}
               variant="contained"
-              color="primary"
               size="large"
-              onClick={RegularBookingPage}
             >
               Book Now
             </Button>
-            <Typography
-              variant="subtitle2"
-              color="white"
-              style={{
-                paddingTop: "15px",
-                alignSelf: { xs: "center", md: "flex-start" },
-                fontSize: "14px",
-              }}
-              sx={{ mb: 2 }}
-            >
-              Starting at $22 an hour
-            </Typography>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100vw", // Take the entire viewport width
-            height: "100%",
-            zIndex: 0,
-            overflow: "hidden", // Ensure the video doesn't overflow
-          }}
-        >
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)", // Center the video
-              width: "auto",
-              height: "100%", // Cover the entire height
-              minWidth: "100%", // Ensure the video covers the width
-              objectFit: "cover",
-              opacity: "0.8",
-            }}
-          >
-            <source
-              src="https://d3lh4iw97b9uun.cloudfront.net/vaccum.mp4"
-              type="video/mp4"
-            />
-            Your browser does not support the video tag.
-          </video>
-        </Box>
+          </Grid>
+        </Grid>
       </Box>
 
       <Divider
         style={{ paddingTop: "20px", paddingBottom: "20px" }}
         variant="middle"
       />
-      <Box
-        sx={{
-          marginTop: "20px",
-          paddingX: { xs: "20px", md: "80px" },
-          paddingTop: "20px",
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 1,
-          paddingBottom: "50px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
-            flexGrow: 1,
-          }}
-        >
-          <Typography
-            variant="h4"
-            color="inherit"
-            sx={{ fontWeight: "bold", mb: 2 }}
-          >
-            What are you looking for?
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            flexGrow: 1,
-          }}
-        >
-          <Box
+      {/* What are you looking for section */}
+      <Grid container direction="column" sx={{ mt: 2.5, px: { xs: 2.5, md: 10 }, pt: 2.5, flexGrow: 1, pb: 6.25 }}>
+      <Grid item>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+          What are you looking for?
+        </Typography>
+      </Grid>
+      <Grid item container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Button
+            fullWidth
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              flexGrow: 1,
-              mb: { xs: 2, md: 0 },
-              mr: { xs: 0, md: 2 },
+              height: { xs: '70px', md: '170px' },
+              borderRadius: '15px',
+              backgroundColor: '#f0ecfc',
+              justifyContent: 'space-between',
+              color: 'black'
             }}
+            variant="outlined"
+            onClick={RegularBookingPage}
           >
-            <Button
-              sx={{
-                width: "100%", // Button takes the full width on all screen sizes
-                height: { xs: "70px", md: "170px" },
-                borderRadius: "15px",
-                backgroundColor: "#f0ecfc",
-              }}
-              variant="outlined"
-              color="inherit"
-              size="large"
-              onClick={RegularBookingPage}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  flexGrow: 1,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flexGrow: 1,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Typography
-                    variant={{ xs: "subtitle1", md: "h6" }}
-                    color="inherit"
-                    sx={{ fontWeight: "bold", mb: 1 }}
-                  >
-                    Regular cleaning
-                  </Typography>
-                  <Typography
-                    variant={{ xs: "caption", md: "body1" }}
-                    color="inherit"
-                    sx={{ mb: 1 }}
-                  >
-                    Starts at $22/hour
-                  </Typography>
-                </Box>
-                <ArrowForwardIosIcon />
-              </Box>
-            </Button>
-          </Box>
-          <Box
+            <Typography variant={isMdUp ? 'h6' : 'subtitle1'} sx={{ fontWeight: 'bold' }}>
+              Home cleaning
+            </Typography>
+            <ArrowForwardIosIcon />
+          </Button>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Button
+            fullWidth
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              flexGrow: 1,
-              mb: { xs: 2, md: 0 },
-              mr: { xs: 0, md: 2 },
+              height: { xs: '70px', md: '170px' },
+              borderRadius: '15px',
+              backgroundColor: '#f0ecfc',
+              justifyContent: 'space-between',
+              color: 'black'
             }}
+            variant="outlined"
+            onClick={RentalBookingPage}
           >
-            <Button
-              sx={{
-                width: "100%", // Button takes the full width on all screen sizes
-                height: { xs: "70px", md: "170px" },
-                borderRadius: "15px",
-                backgroundColor: "#f0ecfc",
-              }}
-              variant="outlined"
-              color="inherit"
-              size="large"
-              onClick={CustomizedBookingPage}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  flexGrow: 1,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flexGrow: 1,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Typography
-                    variant={{ xs: "subtitle1", md: "h6" }}
-                    color="inherit"
-                    sx={{ fontWeight: "bold", mb: 1 }}
-                  >
-                    Customized cleaning
-                  </Typography>
-                  <Typography
-                    variant={{ xs: "caption", md: "body1" }}
-                    color="inherit"
-                    sx={{ mb: 1 }}
-                  >
-                    Starts at $22/hour
-                  </Typography>
-                </Box>
-                <ArrowForwardIosIcon />
-              </Box>
-            </Button>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              flexGrow: 1,
-              mb: { xs: 2, md: 0 },
-              mr: { xs: 0, md: 2 },
-            }}
-          >
-            <Button
-              sx={{
-                width: "100%", // Button takes the full width on all screen sizes
-                height: { xs: "70px", md: "170px" },
-                borderRadius: "15px",
-                backgroundColor: "#f0ecfc",
-              }}
-              variant="outlined"
-              color="inherit"
-              size="large"
-              onClick={MoveBookingPage}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  flexGrow: 1,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flexGrow: 1,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Typography
-                    variant={{ xs: "subtitle1", md: "h6" }}
-                    color="inherit"
-                    sx={{ fontWeight: "bold", mb: 1 }}
-                  >
-                    Move in/ out cleaning
-                  </Typography>
-                  <Typography
-                    variant={{ xs: "caption", md: "body1" }}
-                    color="inherit"
-                    sx={{ mb: 1 }}
-                  >
-                    Starts at $32/hour
-                  </Typography>
-                </Box>
-                <ArrowForwardIosIcon />
-              </Box>
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-
+            <Typography variant={isMdUp ? 'h6' : 'subtitle1'} sx={{ fontWeight: 'bold' }}>
+              Rental Properties Cleaning 
+            </Typography>
+            <ArrowForwardIosIcon />
+          </Button>
+        </Grid>
+      </Grid>
+    </Grid>
       <Divider
         style={{ paddingTop: "20px", paddingBottom: "20px" }}
         variant="middle"
       />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          paddingX: { xs: "20px", md: "80px" },
-          alignItems: "center",
-          flexGrow: 1,
-          marginTop: "20px",
-          paddingTop: "20px",
-        }}
-      >
-        <Box
-          sx={{
-            marginTop: "20px",
-            paddingTop: "10px",
-            paddingRight: { xs: "0", md: "10px" },
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 1,
-            paddingBottom: "50px",
-            width: { xs: "100%", md: "75%" },
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <img
-              src={star}
-              alt="star"
-              style={{
-                width: "40px",
-                height: "40px",
-                alignItems: "center",
-                marginBottom: { xs: "10px", md: "0" },
-              }}
-            />
-            <Typography
-              variant="h4"
-              color="inherit"
-              sx={{
-                fontWeight: "bold",
-                mb: { xs: 1, md: 0 },
-                paddingLeft: { xs: "0", md: "15px" },
-                marginTop: { xs: "10px", md: "0" },
-              }}
-            >
-              Who Are We ?
-            </Typography>
+{/* About us section */}
+    <Box sx={{ flexGrow: 1, overflow: 'hidden', px: { xs: 2.5, md: 10 }, py: 5 }}>
+      <Grid container spacing={4}>
+        {/* Text Content Section */}
+        <Grid  item xs={12} md={8}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            {/* <img src={starIcon} alt="Star" style={{ width: 40, height: 40, marginRight: theme.spacing(2) }} /> */}
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>About Us</Typography>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <PersonIcon />
-            </Box>
-            <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We have gained valuable experience over the past 2.5 years,
-              serving a wide range of customers. From local homes, Airbnb
-              properties to luxurious residences.
-            </Typography>
+          
+          <TypographyInfo icon={<AssignmentIcon sx={{ mr: 2 }} />} text="PurpleGlow Cleaning Services understands that a clean environment is the foundation of a peaceful and productive life, which is why we approach every task with meticulous care and precision. We go beyond the basics of cleaning to ensure that each space we touch transforms into a sanctuary of cleanliness, order, and serenity." />
+          
+          <TypographyInfo icon={<AssignmentIcon sx={{ mr: 2 }} />}   text={text}/>
+          
+          <TypographyInfo icon={<AssignmentIcon sx={{ mr: 2 }} />} text={text1} /> 
+        </Grid>
+
+        {/* Image Section */}
+        <Grid item xs={12} md={4}>
+          <Box sx={{
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+            borderRadius: '15px',
+            overflow: 'hidden',
+            maxWidth: '100%',
+            width: '100%',
+            height: 'auto'
+          }}>
+            <img src={cleaningSink} alt="Cleaning" style={{ width: '100%', height: 'auto' }} />
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <MeetingRoomIcon />
-            </Box>
-            <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We are dedicated to providing exceptional cleaning services
-              tailored to your needs. You can trust us to maintain a pristine
-              and inviting environment in your home.
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <AssignmentIcon />
-            </Box>
-            <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              Works with a 10-point exhaustive cleaning checklist
-            </Typography>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-            maxWidth: "100%", // Set the maxWidth relative to the viewport width
-            width: { xs: "100%", md: "80vh" },
-            height: "auto",
-            borderRadius: "15px",
-          }}
-        >
-          <img
-            src={cleaningSink}
-            alt="profile"
-            style={{
-              maxWidth: "100%",
-              width: "100%",
-              height: "auto",
-              maxHeight: "100%",
-              borderRadius: "15px",
-            }}
-          />
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
+    </Box>
 
       <Divider
         style={{ paddingTop: "10px", paddingBottom: "10px" }}
         variant="middle"
       />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          paddingX: { xs: "20px", md: "80px" },
-          alignItems: "center",
-          flexGrow: 1,
-          marginTop: "20px",
-          paddingTop: "20px",
-        }}
-      >
-        <Box
-          sx={{
-            marginTop: "20px",
-            paddingTop: "10px",
-            paddingRight: { xs: "0", md: "10px" },
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 1,
-            paddingBottom: "50px",
-            width: { xs: "100%", md: "75%" },
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <img
-              src={star}
-              alt="star"
-              style={{
-                width: "40px",
-                height: "40px",
-                alignItems: "center",
-                marginBottom: { xs: "10px", md: "0" },
-              }}
-            />
-            <Typography
-              variant="h4"
-              color="inherit"
-              sx={{
-                fontWeight: "bold",
-                mb: { xs: 1, md: 0 },
-                paddingLeft: { xs: "0", md: "15px" },
-                marginTop: { xs: "10px", md: "0" },
-              }}
-            >
-              4.9+ Customer Ratings
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <PersonIcon />
-            </Box>
-            <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We have gained valuable experience over the past 2.5 years,
-              serving a wide range of customers. From local homes, Airbnb
-              properties to luxurious residences.
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <MeetingRoomIcon />
-            </Box>
-            <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              We are dedicated to providing exceptional cleaning services
-              tailored to your needs. You can trust us to maintain a pristine
-              and inviting environment in your home.
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              flexGrow: 1,
-            }}
-          >
-            <Box style={{ padding: "20px" }}>
-              <AssignmentIcon />
-            </Box>
-            <Typography variant="body1" color="inherit" sx={{ mb: 1 }}>
-              Works with a 10-point exhaustive cleaning checklist
-            </Typography>
-          </Box>
+      <Grid container spacing={2} sx={{ padding: { xs: '20px', md: '80px' }, mt: '20px' }}>
+      {/* Text Content Section */}
+      <Grid item xs={12} md={8} sx={{ pr: { md: '10px' } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <img src={starIcon} alt="Star" style={{ width: '40px', height: '40px', marginRight: '8px' }} />
+          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Reviews</Typography>
         </Box>
-        <Box
-          sx={{
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-            maxWidth: "100%", // Set the maxWidth relative to the viewport width
-            width: { xs: "100%", md: "80vh" },
-            height: "auto",
-            borderRadius: "15px",
-          }}
-        >
-          <img
-            src={cleaningSink}
-            alt="cleaningSink"
-            style={{
-              maxWidth: "100%",
-              width: "100%", // Set the width relative to the viewport width
-              height: "auto",
-              borderRadius: "15px",
-            }}
-            xs
-          />
+
+        <TypographyInfo icon={<PersonIcon sx={{ mr: 2 }} />} text="We have gained valuable experience over the past 2.5 years, serving a wide range of customers. From local homes, Airbnb properties to luxurious residences." />
+        <TypographyInfo icon={<MeetingRoomIcon sx={{ mr: 2 }} />} text="We are dedicated to providing exceptional cleaning services tailored to your needs. You can trust us to maintain a pristine and inviting environment in your home." />
+        <TypographyInfo icon={<AssignmentIcon sx={{ mr: 2 }} />} text="Works with a 10-point exhaustive cleaning checklist." />
+      </Grid>
+
+      {/* Image Section */}
+      <Grid item xs={12} md={4}>
+        <Box sx={{
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+          borderRadius: '15px',
+          overflow: 'hidden',
+          maxWidth: '100%',
+          width: '100%',
+          height: 'auto'
+        }}>
+          <img src={cleaningSink} alt="Cleaning Sink" style={{ width: '100%', height: 'auto' }} />
         </Box>
-      </Box>
+      </Grid>
+    </Grid>
 
       <Divider
         style={{ paddingTop: "20px", paddingBottom: "20px" }}
@@ -662,3 +283,12 @@ export default function Hello() {
     </ThemeProvider>
   );
 }
+
+const TypographyInfo = ({ icon, text }) => {
+  return (
+    <Box sx={{ display: 'flex', direction: 'column', alignItems: 'center', mb: 2 }}>
+      {icon}
+      <Typography variant="body1">{text}</Typography>
+    </Box>
+  );
+};

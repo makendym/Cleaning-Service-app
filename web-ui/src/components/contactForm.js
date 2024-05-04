@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { slideIn } from "../utils/motion";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 
 function ContactForm() {
   const [form, setForm] = useState({
@@ -10,8 +9,6 @@ function ContactForm() {
   });
 
   const [loading, setLoading] = useState(false);
-
-  const formRef = React.createRef();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,15 +20,9 @@ function ContactForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    // You can use the form data from the 'form' state
-
-    // Set loading to true to show "Sending..." while the form is being submitted
     setLoading(true);
 
-    // Example: Simulate a delay (remove this in your actual code)
     setTimeout(() => {
-      // Reset form and loading state after submission
       setForm({
         name: "",
         email: "",
@@ -41,138 +32,110 @@ function ContactForm() {
     }, 2000); // Simulated delay for 2 seconds
   };
 
-  const containerStyles = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center", // Center horizontally
-    alignItems: "center", // Center vertically
-    height: "100vh", // Center vertically on the viewport height
-  };
-
-  const cardStyles = {
-    backgroundColor: "#1a1a1a", // Dark background color
-    padding: "24px",
-    borderRadius: "16px",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
-    width: "100%", // Full width of the card
-    maxWidth: "500px", // Limit the maximum width of the card
-  };
-
-  const labelStyles = {
-    display: "flex",
-    flexDirection: "column",
-  };
-
-  const inputStyles = {
-    backgroundColor: "white", // White background color for text boxes
-    padding: "16px",
-    paddingLeft: "24px",
-    paddingRight: "24px",
-    borderRadius: "12px",
-    outline: "none",
-    border: "none",
-    fontSize: "16px",
-    color: "var(--white-color)",
-    marginBottom: "16px",
-  };
-
-  const buttonStyles = {
-    backgroundColor: "white",
-    padding: "12px",
-    paddingLeft: "24px",
-    paddingRight: "24px",
-    borderRadius: "12px",
-    outline: "none",
-    border: "none",
-    fontSize: "18px",
-    color: "var(--white-color)",
+  const commonStyles = {
+    fontFamily: "League Spartan, sans-serif",
+    fontSize: "22px",
     fontWeight: "bold",
-    cursor: "pointer",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
   };
-
   return (
-    <div style={containerStyles}>
-      <motion.div
-        variants={slideIn("left", "tween", 0.2, 1)}
-        className="flex-[0.75] p-8 rounded-2xl"
-        style={cardStyles}
+    <Box
+      sx={{
+        ...commonStyles,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f5f5f5", // Light grey background
+        padding: 3,
+        borderRadius: 2,
+        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+        maxWidth: "500px",
+        margin: "auto",
+        width: "100%",
+      }}
+    >
+      {/* Heading outside the form but inside the container for overall alignment */}
+      <Typography
+        variant="h3"
+        sx={{
+          fontFamily: "League Spartan, sans-serif",
+          fontWeight: "bold", // Assuming you want the bold weight; adjust as necessary
+          marginBottom: "8px", // gutterBottom equivalent, adjust the value as needed
+          color: "text.primary", // Use theme's color
+        }}
+        gutterBottom
       >
-        <h3 style={{ color: "white" }}>Contact Us</h3>
+        Contact Us
+      </Typography>
 
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className="mt-12 flex flex-col gap-8"
-        >
-          <label style={labelStyles}>
-            <span
-              style={{
-                color: "white",
-                fontWeight: "medium",
-                marginBottom: "16px",
-              }}
-            >
-              Your Name
-            </span>
-            <input
-              type="text"
+      {/* Form container */}
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+        sx={{ mt: 1, width: "100%" }} // Ensure the form takes the full width of the container
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              autoComplete="fname"
               name="name"
+              required
+              fullWidth
+              id="name"
+              label="Your Name"
               value={form.name}
               onChange={handleChange}
-              placeholder="What's your name?"
-              style={inputStyles}
+              variant="outlined"
             />
-          </label>
-          <label style={labelStyles}>
-            <span
-              style={{
-                color: "white",
-                fontWeight: "medium",
-                marginBottom: "16px",
-              }}
-            >
-              Your email
-            </span>
-            <input
-              type="email"
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              id="email"
+              label="Your Email"
               name="email"
+              autoComplete="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="What's your email address?"
-              style={inputStyles}
+              variant="outlined"
             />
-          </label>
-          <label style={labelStyles}>
-            <span
-              style={{
-                color: "white",
-                fontWeight: "medium",
-                marginBottom: "16px",
-              }}
-            >
-              Your Message
-            </span>
-            <textarea
-              rows={7}
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
               name="message"
+              label="Your Message"
+              id="message"
+              autoComplete="off"
+              multiline
+              rows={4}
               value={form.message}
               onChange={handleChange}
-              placeholder="What is your message?"
-              style={inputStyles}
+              variant="outlined"
             />
-          </label>
-
-          <button
-            type="submit"
-            style={buttonStyles}
-            className="float-right"
-          >
-            {loading ? "Sending..." : "Send"}
-          </button>
-        </form>
-      </motion.div>
-    </div>
+          </Grid>
+        </Grid>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{
+            backgroundColor: "#8C52FF",
+            "&:hover": { backgroundColor: "#7A45E5" },
+            color: "white",
+            mt: 2,
+            textTransform: "none",
+          }}
+          size="large"
+          disabled={loading}
+        >
+          {loading ? "Sending..." : "Send"}
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

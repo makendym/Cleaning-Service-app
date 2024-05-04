@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.7.17",
+    "@apollo/client": "^3.9.7",
     "@date-io/dayjs": "^2.16.0",
     "@emailjs/browser": "^3.10.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fontsource/league-spartan": "^5.0.19",
     "@fontsource/roboto": "^5.0.5",
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",

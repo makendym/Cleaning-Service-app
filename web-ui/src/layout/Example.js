@@ -7,7 +7,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom"; // Import the Link component from react-router-dom
 import Box from "@mui/material/Box";
-import logo from "../assets/Quick&Fast-Logo.png";
+import logo from "../assets/PurpleGlow-logo.png";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 // #CE6CE6 - purple
@@ -105,10 +105,10 @@ export default function Example() {
               </Box>
 
               <Box>
-                <Typography variant="h6" color="inherit" noWrap>
-                  Quick &amp; Fast
+                <Typography variant="h6" color="inherit" noWrap style={{ fontFamily: 'League Spartan, sans-serif', fontSize: '22px', fontWeight: 'bold' }}>
+                  PurpleGlow.
                 </Typography>
-                <Typography variant="subtitle1" color="inherit" noWrap>
+                <Typography variant="subtitle1" color="inherit" noWrap style={{ fontFamily: 'League Spartan', fontSize: '16px' }}>
                   Cleaning Services
                 </Typography>
               </Box>

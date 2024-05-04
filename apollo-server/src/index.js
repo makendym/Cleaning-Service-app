@@ -16,5 +16,6 @@ const db = await mongoose.connect(mongoDB, {
     useNewUrlParser: true,
 });
 
+
 console.info('📚 Connected to db', db?.connections[0]?._connectionString);
 console.info(`🚀 Server ready at ${url}`);

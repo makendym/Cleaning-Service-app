@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -16,6 +16,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+} from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { CREATE_BOOKING_MUTATION } from "../graphql";
 import { Stack, Chip } from "@mui/material";
@@ -23,10 +29,31 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import emailjs from "@emailjs/browser";
 import { useLocation } from "react-router-dom";
+import { List, ListItem } from "@mui/material";
+import { AVAILABILITY_QUERY } from "../graphql";
+import {
+  CREATE_APPOINTMENT_MUTATION,
+  CREATE_CLIENT_MUTATION,
+} from "../graphql";
+import { useQuery } from "@apollo/client";
 
-const names = ["Laundry and Folding", "Pressing","Oven", "Fridge", "Baseboards"];
+const names = [
+  "Laundry wash and dry + Folding ",
+  "Folding",
+  "Ironing/Pressing",
+  "Fridge Regular Cleaning",
+  "Fridge DeepCleaning",
+  "Walls",
+  "Ceiling fan",
+  "Interior Windows",
+  "Window blinds",
+  "Oven",
+  "Fridge",
+  "Baseboards",
+];
 const focusedColor = "#8C52FF";
 
 const Containers = styled.div`
@@ -45,10 +72,8 @@ const Containers = styled.div`
 `;
 export default function BookingForm() {
   const location = useLocation();
-
   const [date, setDate] = useState(null);
   const [startTime, setStartTime] = useState("");
-
   const [packages, setPackage] = useState(location.state.name || "Regular");
   const [activeStep, setActiveStep] = React.useState(0);
   const [firstName, setFirstName] = useState("");
@@ -59,6 +84,8 @@ export default function BookingForm() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zip, setZip] = useState("");
+  const [service, setService] = useState(location.state.name || "");
+  const [type, setType] = useState("");
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
   const [kitchen, setKitchen] = useState("");
@@ -71,16 +98,135 @@ export default function BookingForm() {
   const [notes, setNotes] = useState("");
   const [isDayPicked, setIsDayPicked] = useState(false);
   const [isTimePicked, setIsTimePicked] = useState(false);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [createdClientId, setCreatedClientId] = useState(null);
+  const [
+    createClient,
+    { loading: creatingClient, error: clientCreationError },
+  ] = useMutation(CREATE_CLIENT_MUTATION);
 
+  const {
+    data,
+    loading: availabilityLoading,
+    error: availabilityError,
+  } = useQuery(AVAILABILITY_QUERY, {
+    variables: { date: date ? dayjs(date).startOf('day').toISOString() : "" },
+    skip: !date, // Skip the query if date is null
+    fetchPolicy: "network-only",
+  });
+  const [dayTimeSlots, setDayTimeSlots] = useState([]);
+  const [frequency, setFrequency] = React.useState("");
+
+  // useEffect(() => {
+  //   console.log(data);
+  //   if (data && !availabilityLoading && !availabilityError) {
+  //     // Initialize an array of 7 elements for each day of the week
+  //     const schedule = Array(7).fill(null);
+
+  //     // Populate the array with timeSlots for each dayOfWeek
+  //     data.availability.forEach(({ dayOfWeek, timeSlots }) => {
+  //       schedule[dayOfWeek] = timeSlots || []; // Use an empty array for days with no time slots
+  //     });
+
+  //     console.log(schedule);
+  //     setDayTimeSlots(schedule);
+  //   }
+  // }, [data, availabilityLoading, availabilityError]);
+
+  // useEffect(() => {
+  //   console.log(data);
+  //   if (data && !availabilityLoading && !availabilityError) {
+  //     // Assuming `data.availability` is structured as shown in your response
+  //     const updatedSchedule = data.availability.reduce((acc, curr) => {
+  //       acc[curr.dayOfWeek] = curr.timeSlots || [];
+  //       return acc;
+  //     }, Array(7).fill([]));
+
+  //     console.log(updatedSchedule);
+  //     setDayTimeSlots(updatedSchedule);
+  //   }
+  // }, [data, availabilityLoading, availabilityError]);
+  useEffect(() => {
+    if (data && !availabilityLoading && !availabilityError) {
+      // Directly set the timeSlots for the selected date
+      const slotsForSelectedDay =
+        data.availability.length > 0 ? data.availability[0].timeSlots : [];
+      setTimeSlots(slotsForSelectedDay);
+    }
+  }, [data, availabilityLoading, availabilityError]);
+
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
+    const newTimeSlots = GenerateTimeSlots(newDate);
+    setTimeSlots(newTimeSlots);
+    setIsDayPicked(true);
+  };
+
+  const GenerateTimeSlots = (dates) => {
+    const dayOfWeek = dates.day(); // Ensure this matches the day index used in dayTimeSlots
+    return dayTimeSlots[dayOfWeek] || []; // Returns the time slots for the day, or an empty array if none
+  };
+
+  const handleStartTimeChange = (time) => {
+    setStartTime(time);
+    const selectedDateTime = date.format("MMM DD, YYYY") + " " + time;
+    console.log("Selected Date and Time:", selectedDateTime);
+    setIsTimePicked(true);
+  };
+
+  const handleFrequencyChange = (event) => {
+    setFrequency(event.target.value);
+  };
   const steps = [
     "Choose day and time",
     "Add your information",
     "Create a package",
   ];
 
-  const handleNext = () => {
+  const createClientDetails = async () => {
+    //This function does not channge the client id after thet user submits and clicks book again but it return a new client ID  when the client reloads page
+    if (!createdClientId) {
+      // Check if client hasn't been created yet
+      try {
+        const { data } = await createClient({
+          variables: {
+            client: {
+              first_name: firstName,
+              last_name: lastName,
+              phone_number: phoneNumber,
+              email: email,
+              address: address,
+              city: city,
+              state: state,
+              zip: zip,
+            },
+          },
+        });
+
+        if (data && data.createClient && data.createClient.id) {
+          console.log("Client created with ID:", data.createClient.id);
+          setCreatedClientId(data.createClient.id); // Save the created client ID
+          return true; // Indicate success
+        }
+      } catch (error) {
+        console.error("Error creating client:", error);
+        // Handle error, for example, by setting an error state
+        return false; // Indicate failure
+      }
+    }
+    return true; // Proceed if client already created
+  };
+
+  const handleNext = async () => {
     setError(false); // Reset the error state
 
+    if (activeStep === 1) {
+      const success = await createClientDetails();
+      if (!success) {
+        setError(true);
+        return; // Halt the next step if client creation fails
+      }
+    }
     // Check if the current step has incomplete fields and set the error state accordingly
     if (activeStep === 0 && !isDayPicked) {
       setError(true);
@@ -100,7 +246,8 @@ export default function BookingForm() {
       setError(true);
     } else if (
       activeStep === 2 &&
-      (packages === "" ||
+      (service === "" ||
+        type === "" ||
         bedrooms === "" ||
         bathrooms === "" ||
         kitchen === "" ||
@@ -124,9 +271,37 @@ export default function BookingForm() {
   };
 
   const [createBookingMutation] = useMutation(CREATE_BOOKING_MUTATION);
+  const [
+    createAppointment,
+    {
+      data: appointmentData,
+      loading: appointmentLoading,
+      error: appointmentError,
+    },
+  ] = useMutation(CREATE_APPOINTMENT_MUTATION);
 
-  const handleChange = (event) => {
-    setPackage(event.target.value);
+  const handleServiceChange = (event) => {
+    const newService = event.target.value;
+    setService(newService); // Update the service state
+
+    // Reset or update 'type' based on the selected service
+    if (newService === "Home cleaning") {
+      // If "Home cleaning" is selected and the current type isn't a valid option, reset or set a default value
+      if (
+        ![
+          "Regular home cleaning",
+          "Deep cleaning",
+          "Move in/out cleaning",
+        ].includes(type)
+      ) {
+        setType(""); // Reset to default or choose a valid initial type for "Home cleaning"
+      }
+    } else if (newService === "Rental Properties Cleaning") {
+      // If "Rental properties" is selected and the current type isn't a valid option, reset or set a default value
+      if (!["Basic cleaning", "Deep cleaning"].includes(type)) {
+        setType(""); // Reset to default or choose a valid initial type for "Rental properties"
+      }
+    }
   };
 
   const handleKitchenChange = (event) => {
@@ -143,7 +318,7 @@ export default function BookingForm() {
   const finalStep = () => {
     if (
       activeStep === 2 &&
-      (packages === "" ||
+      (service === "" ||
         bedrooms === "" ||
         bathrooms === "" ||
         kitchen === "" ||
@@ -184,20 +359,36 @@ export default function BookingForm() {
       );
   };
 
+  const convertTo24Hour = (time) => {
+    const [timePart, modifier] = time.split(" ");
+    let [hours, minutes] = timePart.split(":");
+    if (hours === "12") {
+      hours = "00";
+    }
+    if (modifier === "PM") {
+      hours = parseInt(hours, 10) + 12;
+    }
+    return `${hours}:${minutes}`;
+  };
+
   const handleSubmit = async () => {
-    const bookingData = {
-      createdAt: new Date(),
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      phone_number: phoneNumber,
-      booking_date: date ? date.startOf("day").toDate() : null,
-      booking_time: startTime,
-      address: address,
-      city: city,
-      state: state,
-      zip: zip,
-      package: packages,
+    // Prepare the appointment data
+
+    // Assuming `date` is a Dayjs object
+    const formattedDate = dayjs(date).format("YYYY-MM-DD");
+
+    // Convert startTime from 12-hour format to 24-hour format
+    const time24hr = convertTo24Hour(startTime);
+
+    // Combine date and time into an ISO 8601 DateTime string
+    const appointmentDateTime = dayjs(`${formattedDate}T${time24hr}:00.000Z`);
+
+    const endDateTime = appointmentDateTime.add(2, "hour");
+
+    const appointmentData = {
+      employee_created: "65f44d59832646270adaf864", // employee_id
+      client_id: createdClientId, // Assuming createdClientId is correctly obtained earlier
+      package: service,
       bedrooms: parseInt(bedrooms, 10),
       bathrooms: parseInt(bathrooms, 10),
       kitchen: kitchen,
@@ -205,21 +396,27 @@ export default function BookingForm() {
       kindOfPet: kindOfPet,
       add_ons: addOns,
       notes: notes,
+      start_time: appointmentDateTime.toISOString(), // Assuming `date` and `startTime` are correctly set
+      end_time_expected: endDateTime.toISOString(), // This needs proper calculation based on your logic
+      // Include any other fields as required by your GraphQL mutation
     };
 
     try {
-      const {
-        data: { createBooking },
-      } = await createBookingMutation({
+      const response = await createAppointment({
         variables: {
-          booking: bookingData,
+          appointment: appointmentData, // Correctly passing the structured data
         },
       });
 
-      console.log("Created Booking:", createBooking);
+      console.log(
+        "Appointment created successfully:",
+        response.data.createAppointment
+      );
+      // Reset form state and handle post-creation logic here
       setDate(null);
       setStartTime("");
-      setPackage("");
+      setService("");
+      setType("");
       setFirstName("");
       setLastName("");
       setAddress("");
@@ -236,17 +433,95 @@ export default function BookingForm() {
       setPets("");
       setAddOns([]);
       setNotes("");
-
+      setStartTime("");
       setBookingSubmitted(true);
-      
+
       handleEmailConfirmation();
       console.log("Email confirmation sent!");
     } catch (e) {
-      console.error("Error creating booking:", e);
+      console.error("Error creating appointment:", e);
+      // Properly handle the error scenario, possibly updating the UI to inform the user
     }
-
-
   };
+
+  // const handleSubmit = async () => {
+  //   const bookingData = {
+  //     createdAt: new Date(),
+  //     first_name: firstName,
+  //     last_name: lastName,
+  //     email: email,
+  //     phone_number: phoneNumber,
+  //     booking_date: date ? date.startOf("day").toDate() : null,
+  //     booking_time: startTime,
+  //     address: address,
+  //     city: city,
+  //     state: state,
+  //     zip: zip,
+  //     package: service,
+  //     bedrooms: parseInt(bedrooms, 10),
+  //     bathrooms: parseInt(bathrooms, 10),
+  //     kitchen: kitchen,
+  //     supplies: supplies,
+  //     kindOfPet: kindOfPet,
+  //     add_ons: addOns,
+  //     notes: notes,
+  //   };
+
+  //   const appointmentVariables = {
+  //     appointment: {
+  //       employee_created: "65f44d59832646270adaf864", // Replace with the actual employee ID
+  //       client_id: createdClientId,
+  //       client_name: `${firstName} ${lastName}`,
+  //       contact: email,
+  //       bedrooms: parseInt(bedrooms, 10),
+  //       bathrooms: parseInt(bathrooms, 10),
+  //       kitchen: kitchen,
+  //       supplies: supplies,
+  //       kindOfPet: kindOfPet,
+  //       add_ons: addOns,
+  //       notes: notes,
+  //       // Ensure other required fields are included here
+  //     },
+  //   };
+  //   try {
+  //     const {
+  //       data: { createBooking },
+  //     } = await createAppointment({
+  //       variables: {
+  //         booking: appointmentVariables,
+  //       },
+  //     });
+
+  //     console.log("Created Booking:", createBooking);
+  //     setDate(null);
+  //     setStartTime("");
+  //     setService("");
+  //     setType("");
+  //     setFirstName("");
+  //     setLastName("");
+  //     setAddress("");
+  //     setCity("");
+  //     setState("");
+  //     setEmail("");
+  //     setPhoneNumber("");
+  //     setBathrooms("");
+  //     setBedrooms("");
+  //     setZip("");
+  //     setKitchen("");
+  //     setSupplies("");
+  //     setKindOfPet("");
+  //     setPets("");
+  //     setAddOns([]);
+  //     setNotes("");
+
+  //     setBookingSubmitted(true);
+
+  //     handleEmailConfirmation();
+  //     console.log("Email confirmation sent!");
+  //   } catch (e) {
+  //     console.error("Error creating booking:", e);
+  //   }
+  // };
 
   // Define your custom theme
   const theme = createTheme({
@@ -320,80 +595,24 @@ export default function BookingForm() {
       MuiPickersDay: {
         styleOverrides: {
           root: {
-            "&:hover": {
-              backgroundColor: focusedColor, // Change the hover background color
+            "&&:hover": {
+              backgroundColor: focusedColor,
             },
-            "&.Mui-selected ": {
-              backgroundColor: focusedColor, // Change the selected background color
+            "&&.Mui-selected": {
+              backgroundColor: focusedColor,
+              color: "#fff",
+            },
+            "&&.Mui-focusVisible": {
+              backgroundColor: focusedColor,
+            },
+            "&&.Mui-focused": {
+              backgroundColor: focusedColor,
             },
           },
         },
       },
     },
   });
-
-  const [timeSlots, setTimeSlots] = useState([]);
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-
-    // Replace this logic with your actual implementation to generate time slots
-    const newTimeSlots = generateTimeSlots(newDate);
-    setTimeSlots(newTimeSlots);
-
-    setIsDayPicked(true);
-  };
-
-  // Replace this function with your logic to generate time slots
-  const generateTimeSlots = (dates) => {
-    const dayOfWeek = dates.day(); // Get the day of the week (0 for Sunday, 1 for Monday, ...)
-
-    // Define time slots for each day of the week
-    const dayTimeSlots = [
-      [], // Sunday (no time slots)
-      ["10:00 AM", "11:00 AM", "12:00 PM"], // Monday
-      [
-        "10:00 AM",
-        "11:00 AM",
-        "12:00 PM",
-        "01:00 PM",
-        "02:00 PM",
-        "03:00 PM",
-        "04:00 PM",
-        "05:00 PM",
-      ], // Tuesday
-      ["10:00 AM", "11:00 AM", "12:00 PM"], // Wednesday (no time slots)
-      [
-        "10:00 AM",
-        "11:00 AM",
-        "12:00 PM",
-        "01:00 PM",
-        "02:00 PM",
-        "03:00 PM",
-        "04:00 PM",
-        "05:00 PM",
-      ], // Thursday
-      [
-        "10:00 AM",
-        "11:00 AM",
-        "12:00 PM",
-        "01:00 PM",
-        "02:00 PM",
-        "03:00 PM",
-        "04:00 PM",
-        "05:00 PM",
-      ], // Friday (no time slots)
-      [], // Saturday (no time slots)
-    ];
-
-    return dayTimeSlots[dayOfWeek];
-  };
-
-  const handleStartTimeChange = (time) => {
-    setStartTime(time);
-    const selectedDateTime = date.format("MMM DD, YYYY") + " " + startTime;
-    console.log("Selected Date and Time:", selectedDateTime);
-    setIsTimePicked(true);
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -447,7 +666,6 @@ export default function BookingForm() {
                   );
                 })}
               </Stepper>
-
               {activeStep === 0 && (
                 <React.Fragment>
                   <Box
@@ -465,10 +683,11 @@ export default function BookingForm() {
                         paddingTop: "20px",
                       }}
                     >
-                      <Containers
+                      <Grid
+                        item
+                        xs={12} // Adjust this to fit the entire row for the header and calendar
                         style={{
                           display: "flex",
-                          flexWrap: "wrap",
                           flexDirection: "column",
                           alignItems: "center", // Center horizontally
                           justifyContent: "center", // Center vertically
@@ -481,52 +700,43 @@ export default function BookingForm() {
                           views={["year", "month", "day"]}
                           onChange={handleDateChange}
                         />
-                        <div>
-                          <Typography>Select a time slot:</Typography>
-                          <ul
-                            style={{
-                              listStyle: "none",
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "center", // Center horizontally
-                              paddingTop: 10,
-                              margin: 0,
-                              padding: 0,
-                              gap: "10px", // Add gap for spacing between time slots
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            {timeSlots.length === 0 ? (
-                              <p>No time slots available</p>
-                            ) : (
-                              timeSlots.map((timeSlot, index) => (
-                                <li
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12} // Adjust this to fit the entire row for time slots
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center", // Center horizontally
+                          justifyContent: "center", // Center vertically
+                        }}
+                      >
+                        {/* <Typography>Select a time slot:</Typography> */}
+                        <Grid
+                          container
+                          spacing={2}
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Grid item xs={12}  style={{ textAlign: "center" }}>
+                            <Typography>Select a time slot:</Typography>
+                            {timeSlots.length > 0 ? (
+                              timeSlots.map((slot, index) => (
+                                <Button
                                   key={index}
-                                  style={{
-                                    marginBottom: "10px",
-                                  }}
+                                  variant="outlined"
+                                  style={{ margin: 2 }}
+                                  onClick={() => handleStartTimeChange(slot)}
                                 >
-                                  <Button
-                                    onClick={() =>
-                                      handleStartTimeChange(timeSlot)
-                                    }
-                                    style={{
-                                      backgroundColor:
-                                        startTime === timeSlot
-                                          ? focusedColor
-                                          : "",
-                                      color:
-                                        startTime === timeSlot ? "white" : "",
-                                    }}
-                                  >
-                                    {timeSlot}
-                                  </Button>
-                                </li>
+                                  {slot}
+                                </Button>
                               ))
+                            ) : (
+                              <Typography>No available time slots.</Typography>
                             )}
-                          </ul>
-                        </div>
-                      </Containers>
+                          </Grid>
+                        </Grid>
+                      </Grid>
                       {error && !isDayPicked && (
                         <Typography variant="caption" color="error">
                           Please pick a day before proceeding.
@@ -700,25 +910,110 @@ export default function BookingForm() {
                   >
                     <Grid item xs={12}>
                       <InputLabel id="demo-simple-select-label">
-                        Choose a package
+                        Choose a service
                       </InputLabel>
                       <Select
-                        error={error && packages === ""}
-                        value={packages}
-                        onChange={handleChange}
+                        error={error && service === ""}
+                        value={service}
+                        onChange={handleServiceChange}
                         variant="outlined"
                         fullWidth
                       >
-                        <MenuItem value={"Regular"}>Regular</MenuItem>
-                        <MenuItem value={"Customized"}>Customized</MenuItem>
-                        <MenuItem value={"Move In/Out"}>Move In/Out</MenuItem>
+                        <MenuItem value={"Home cleaning"}>
+                          Home cleaning
+                        </MenuItem>
+                        <MenuItem value={"Rental Properties Cleaning"}>
+                          Rental Properties Cleaning
+                        </MenuItem>
                       </Select>
-                      {error && packages === "" && (
+                      {error && service === "" && (
                         <Typography variant="caption" color="error">
-                          Please choose a package.
+                          Please choose a service.
                         </Typography>
                       )}
                     </Grid>
+                    <Grid item xs={12}>
+                      <InputLabel id="demo-simple-select-label">
+                        Type of service
+                      </InputLabel>
+                      <Select
+                        error={error && type === ""}
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        variant="outlined"
+                        fullWidth
+                      >
+                        {service === "Home cleaning" && [
+                          <MenuItem
+                            key="Regular home cleaning"
+                            value="Regular home cleaning"
+                          >
+                            Regular home cleaning
+                          </MenuItem>,
+                          <MenuItem key="Deep cleaning" value="Deep cleaning">
+                            Deep cleaning
+                          </MenuItem>,
+                          <MenuItem
+                            key="Move in/out cleaning"
+                            value="Move in/out cleaning"
+                          >
+                            Move in/out cleaning
+                          </MenuItem>,
+                        ]}
+                        {service === "Rental Properties Cleaning" && [
+                          <MenuItem key="Basic cleaning" value="Basic cleaning">
+                            Basic cleaning
+                          </MenuItem>,
+                          <MenuItem key="Deep cleaning" value="Deep cleaning">
+                            Deep cleaning
+                          </MenuItem>,
+                        ]}
+                      </Select>
+                      {error && type === "" && (
+                        <Typography variant="caption" color="error">
+                          Please choose a type.
+                        </Typography>
+                      )}
+                    </Grid>
+                    <Grid item xs={12}>
+                      <InputLabel id="frequency-radio-group-label">
+                        Frequency
+                      </InputLabel>
+                      <RadioGroup
+                        row // This changes the layout to a row
+                        aria-labelledby="frequency-radio-group-label"
+                        value={frequency}
+                        onChange={handleFrequencyChange}
+                        name="frequency-radio-group"
+                      >
+                        <FormControlLabel
+                          value="oneTime"
+                          control={<Radio />}
+                          label="One-time"
+                        />
+                        <FormControlLabel
+                          value="daily"
+                          control={<Radio />}
+                          label="Daily"
+                        />
+                        <FormControlLabel
+                          value="weekly"
+                          control={<Radio />}
+                          label="Weekly"
+                        />
+                        <FormControlLabel
+                          value="everyOtherWeek"
+                          control={<Radio />}
+                          label="Every-other week"
+                        />
+                        <FormControlLabel
+                          value="every4Weeks"
+                          control={<Radio />}
+                          label="Every 4 weeks"
+                        />
+                      </RadioGroup>
+                    </Grid>
+
                     <Grid item xs={12} sm={6}>
                       <InputLabel> Number of bedrooms</InputLabel>
                       <TextField
@@ -756,7 +1051,7 @@ export default function BookingForm() {
                         inputProps={{
                           min: 0, // Minimum value
                           max: 5, // Maximum value
-                          step: ".5" 
+                          step: ".5",
                         }}
                         helperText={
                           error && bedrooms === ""
@@ -801,8 +1096,9 @@ export default function BookingForm() {
                         variant="outlined"
                         fullWidth
                       >
-                        <MenuItem value={"yes"}>Yes</MenuItem>
-                        <MenuItem value={"no"}>No</MenuItem>
+                        <MenuItem value={"Dog"}>Dog</MenuItem>
+                        <MenuItem value={"Cat"}>Cat</MenuItem>
+                        <MenuItem value={"Other"}>Other</MenuItem>
                       </Select>
                       {error && pets === "" && (
                         <Typography variant="caption" color="error">
@@ -890,11 +1186,12 @@ export default function BookingForm() {
                     <Grid item xs={12}>
                       <InputLabel> Notes</InputLabel>
                       <TextField
-                        placeholder="Leave detailed instrutions"
+                        placeholder="Leave detailed instructions"
                         variant="outlined"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         multiline
+                        rows={3}
                         fullWidth
                       />
                     </Grid>
@@ -945,7 +1242,9 @@ export default function BookingForm() {
                   </React.Fragment>
 
                   {activeStep === steps.length - 1 ? (
-                    <Button onClick={finalStep} disabled={bookingSubmitted}>Book Appointment</Button>
+                    <Button onClick={finalStep} disabled={bookingSubmitted}>
+                      Book Appointment
+                    </Button>
                   ) : (
                     <Button onClick={handleNext}>Next</Button>
                   )}
