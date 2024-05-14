@@ -8,7 +8,7 @@ const {
     ServiceBooked,
     ServiceProvided,
   } = require('./models/BookingSchema.js');
-  const { Availability }  = require('./src/models/AvailabilitySchema.js');
+  const { Availability }  = require('./models/AvailabilitySchema.js');
 
   const resolvers = {
     Query: {
