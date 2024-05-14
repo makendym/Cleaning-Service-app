@@ -16,14 +16,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import {
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-} from "@mui/material";
+import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { CREATE_BOOKING_MUTATION } from "../graphql";
+// import { CREATE_BOOKING_MUTATION } from "../graphql";
 import { Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import styled from "styled-components";
@@ -32,7 +27,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import emailjs from "@emailjs/browser";
 import { useLocation } from "react-router-dom";
-import { List, ListItem } from "@mui/material";
 import { AVAILABILITY_QUERY } from "../graphql";
 import {
   CREATE_APPOINTMENT_MUTATION,
@@ -56,20 +50,20 @@ const names = [
 ];
 const focusedColor = "#8C52FF";
 
-const Containers = styled.div`
-  width: 475px;
-  margin: 1em auto;
-  padding: 1em;
-  background-color: #fff;
-  color: #8c52ff;
-  border: 1px solid #f0f0f0;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 2px 4px #00000018;
-  @media (max-width: 520px) {
-    width: 100%;
-  }
-`;
+// const Containers = styled.div`
+//   width: 475px;
+//   margin: 1em auto;
+//   padding: 1em;
+//   background-color: #fff;
+//   color: #8c52ff;
+//   border: 1px solid #f0f0f0;
+//   border-radius: 10px;
+//   text-align: center;
+//   box-shadow: 0 2px 4px #00000018;
+//   @media (max-width: 520px) {
+//     width: 100%;
+//   }
+// `;
 export default function BookingForm() {
   const location = useLocation();
   const [date, setDate] = useState(null);
@@ -100,21 +94,18 @@ export default function BookingForm() {
   const [isTimePicked, setIsTimePicked] = useState(false);
   const [timeSlots, setTimeSlots] = useState([]);
   const [createdClientId, setCreatedClientId] = useState(null);
-  const [
-    createClient,
-    { loading: creatingClient, error: clientCreationError },
-  ] = useMutation(CREATE_CLIENT_MUTATION);
+  const [createClient] = useMutation(CREATE_CLIENT_MUTATION);
 
   const {
     data,
     loading: availabilityLoading,
     error: availabilityError,
   } = useQuery(AVAILABILITY_QUERY, {
-    variables: { date: date ? dayjs(date).startOf('day').toISOString() : "" },
+    variables: { date: date ? dayjs(date).startOf("day").toISOString() : "" },
     skip: !date, // Skip the query if date is null
     fetchPolicy: "network-only",
   });
-  const [dayTimeSlots, setDayTimeSlots] = useState([]);
+  const [dayTimeSlots] = useState([]);
   const [frequency, setFrequency] = React.useState("");
 
   // useEffect(() => {
@@ -271,14 +262,7 @@ export default function BookingForm() {
   };
 
   // const [createBookingMutation] = useMutation(CREATE_BOOKING_MUTATION);
-  const [
-    createAppointment,
-    {
-      data: appointmentData,
-      loading: appointmentLoading,
-      error: appointmentError,
-    },
-  ] = useMutation(CREATE_APPOINTMENT_MUTATION);
+  const [createAppointment] = useMutation(CREATE_APPOINTMENT_MUTATION);
 
   const handleServiceChange = (event) => {
     const newService = event.target.value;
@@ -718,7 +702,7 @@ export default function BookingForm() {
                           justifyContent="center"
                           alignItems="center"
                         >
-                          <Grid item xs={12}  style={{ textAlign: "center" }}>
+                          <Grid item xs={12} style={{ textAlign: "center" }}>
                             <Typography>Select a time slot:</Typography>
                             {timeSlots.length > 0 ? (
                               timeSlots.map((slot, index) => (

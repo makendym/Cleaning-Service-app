@@ -20,7 +20,7 @@ const customTheme = createTheme({
 export default function Example() {
   const navigate = useNavigate();
   const BookingPage = () => {
-    navigate("/bookingForm", { state: { name: "Regular" } });
+    navigate("/bookingForm", { state: { name: "Home cleaning" } });
   };
 
   const location = useLocation();
