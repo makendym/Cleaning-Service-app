@@ -74,7 +74,7 @@ export default function BookingForm() {
   const location = useLocation();
   const [date, setDate] = useState(null);
   const [startTime, setStartTime] = useState("");
-  const [packages, setPackage] = useState(location.state.name || "Regular");
+  // const [packages, setPackage] = useState(location.state.name || "Regular");
   const [activeStep, setActiveStep] = React.useState(0);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -270,7 +270,7 @@ export default function BookingForm() {
     setBookingSubmitted(false);
   };
 
-  const [createBookingMutation] = useMutation(CREATE_BOOKING_MUTATION);
+  // const [createBookingMutation] = useMutation(CREATE_BOOKING_MUTATION);
   const [
     createAppointment,
     {

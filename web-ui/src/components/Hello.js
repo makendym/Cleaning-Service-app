@@ -64,9 +64,9 @@ export default function Hello() {
   const RentalBookingPage = () => {
     navigate("/bookingForm", { state: { id: 1, name: "Rental Properties Cleaning" } });
   };
-  const MoveBookingPage = () => {
-    navigate("/bookingForm", { state: { id: 1, name: "Move In/Out" } });
-  };
+  // const MoveBookingPage = () => {
+  //   navigate("/bookingForm", { state: { id: 1, name: "Move In/Out" } });
+  // };
 
   const text = `At PurpleGlow, we believe in the power of a personal touch. "Elevate Your Clean with a Touch of Purple" is not just our slogan; it's our promise to you. It encapsulates our mission to provide an elite service that leaves your spaces not only sparkling clean but also imbued with a sense of tranquility and luxury that only PurpleGlow can offer.`;
   const text1 = `Book with PurpleGlow Cleaning Services today and step into a world where cleanliness meets luxury. Let us transform your environment into a haven of peace and purity, where every detail is taken care of, and all that's left for you to do is enjoy the PurpleGlow difference. Experience the ultimate in home and office cleaning—experience the PurpleGlow effect.`;
