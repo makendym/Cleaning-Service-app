@@ -10,15 +10,6 @@ import { Book } from "./src/models/Book.js";
 import { Bookings } from "./src/models/Bookings.js";
 import { Availability } from "./src/models/AvailabilitySchema.js";
 
-function convertToSlotFormat(time) {
-  // Assuming 'time' is in "HH:MM" format
-  const [hours, minutes] = time.split(":").map(Number);
-  const period = hours >= 12 ? "PM" : "AM";
-  const formattedHours = ((hours + 11) % 12) + 1; // Convert to 12-hour format
-  return `${formattedHours}:${
-    minutes < 10 ? "0" + minutes : minutes
-  } ${period}`;
-}
 export const resolvers = {
   Query: {
     hello: (_, { name }) => `Hello ${name}`,
