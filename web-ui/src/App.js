@@ -6,8 +6,11 @@ import Footer from "./layout/Footer";
 import Example from "./layout/Example";
 
 const client = new ApolloClient({
-  ///.netlify/functions/graphql
-  uri: "http://localhost:4000/graphql",
+  //NetlifyGraphQL
+  //"/.netlify/functions/graphql"
+  //LocalGraphQL
+  //"http://localhost:4000/graphql"
+  uri: "/.netlify/functions/graphql",
   cache: new InMemoryCache(),
 });
 
