@@ -1,5 +1,6 @@
 const { Book } = require('./models/Book');
 const Bookings = require('./models/Bookings');
+const Availability  = require('./models/AvailabilitySchema');
 const {
     Appointment,
     Client,
@@ -8,7 +9,6 @@ const {
     ServiceBooked,
     ServiceProvided,
   } = require('./models/BookingSchema');
-  const { Availability }  = require('./models/AvailabilitySchema');
 
   const resolvers = {
     Query: {

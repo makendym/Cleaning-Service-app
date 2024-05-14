@@ -11,5 +11,7 @@ const AvailabilitySchema = new mongoose.Schema({
 });
 
 const Availability = mongoose.model("Availability", AvailabilitySchema);
-
 module.exports = Availability;
+
+const Bookings = mongoose.model("Bookings", BookingSchema);
+module.exports = Bookings;
