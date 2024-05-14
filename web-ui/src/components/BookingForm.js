@@ -21,7 +21,6 @@ import { useMutation } from "@apollo/client";
 // import { CREATE_BOOKING_MUTATION } from "../graphql";
 import { Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import styled from "styled-components";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
