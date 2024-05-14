@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const AvailabilitySchema = new mongoose.Schema({
     dayOfWeek: {
@@ -10,4 +10,6 @@ const AvailabilitySchema = new mongoose.Schema({
     }],
 });
 
-export const Availability = mongoose.model("Availability", AvailabilitySchema);
+const Availability = mongoose.model("Availability", AvailabilitySchema);
+
+module.exports = Availability;

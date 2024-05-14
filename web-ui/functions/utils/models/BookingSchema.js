@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
   date_created: { type: Date, default: Date.now },
@@ -98,10 +98,18 @@ const ServiceBookedSchema = new mongoose.Schema({
   
 // You would also define schemas for ServiceProvided, ServiceBooked, Service, etc. according to the ERD.
 
-export const Appointment = mongoose.model("Appointment", AppointmentSchema);
-export const Employee = mongoose.model("Employee", EmployeeSchema);
-export const Client = mongoose.model("Client", ClientSchema);
-export const Service = mongoose.model("Service", ServiceSchema);
-export const ServiceProvided = mongoose.model("ServiceProvided", ServiceProvidedSchema);
-export const ServiceBooked = mongoose.model("ServiceBooked", ServiceBookedSchema);
+const Appointment = mongoose.model("Appointment", AppointmentSchema);
+const Employee = mongoose.model("Employee", EmployeeSchema);
+const Client = mongoose.model("Client", ClientSchema);
+const Service = mongoose.model("Service", ServiceSchema);
+const ServiceProvided = mongoose.model("ServiceProvided", ServiceProvidedSchema);
+const ServiceBooked = mongoose.model("ServiceBooked", ServiceBookedSchema);
 
+module.exports = {
+  Appointment,
+  Employee,
+  Client,
+  Service,
+  ServiceProvided,
+  ServiceBooked
+}

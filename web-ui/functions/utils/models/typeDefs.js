@@ -1,6 +1,6 @@
-import { gql } from "graphql-tag";
+const { gql } = require("graphql-tag");
 
-export const typeDefs = gql`
+const typeDefs = gql`
   scalar GraphQLDateTime
   scalar GraphQLDate
   scalar GraphQLTime
@@ -228,3 +228,5 @@ export const typeDefs = gql`
     createAvailability(availability: AvailabilityInput!): Availability
   }
 `;
+
+module.exports = typeDefs;
