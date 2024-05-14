@@ -94,13 +94,13 @@ export default function Hello() {
         >
           <Grid item xs={12}
             sx={{
-              textAlign: { xs: 'center', md: 'left' },
+              textAlign: { xs: 'center', md: 'center' },
               maxWidth: 'lg', // Sets a maximum width for large screens
               mx: 'auto' // Centers the grid item within the container
             }}
           >
-            <Typography variant="h2" color="white" sx={{ fontWeight: 'bold', mb: 2 }}>
-              Expert Home Cleaning Services
+            <Typography variant="h3" color="white" sx={{ fontWeight: 'bold', mb: 2 }}>
+            Elevate Your Clean With A Touch Of Purple
             </Typography>
             {/* <Typography variant="subtitle1" color="white" sx={{ mb: 1 }}>
               Phone number: TBD
@@ -171,7 +171,7 @@ export default function Hello() {
             onClick={RentalBookingPage}
           >
             <Typography variant={isMdUp ? 'h6' : 'subtitle1'} sx={{ fontWeight: 'bold' }}>
-              Rental Properties Cleaning 
+              Rental Property Cleaning 
             </Typography>
             <ArrowForwardIosIcon />
           </Button>
