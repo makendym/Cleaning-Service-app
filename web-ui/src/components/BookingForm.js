@@ -32,6 +32,7 @@ import {
   CREATE_CLIENT_MUTATION,
 } from "../graphql";
 import { useQuery } from "@apollo/client";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 const names = [
   "Laundry wash and dry + Folding ",
@@ -63,6 +64,7 @@ const focusedColor = "#8C52FF";
 //     width: 100%;
 //   }
 // `;
+
 export default function BookingForm() {
   const location = useLocation();
   const [date, setDate] = useState(null);
@@ -158,6 +160,7 @@ export default function BookingForm() {
   };
 
   const handleStartTimeChange = (time) => {
+    setSelectedTimeSlot(time);
     setStartTime(time);
     const selectedDateTime = date.format("MMM DD, YYYY") + " " + time;
     console.log("Selected Date and Time:", selectedDateTime);
@@ -167,6 +170,82 @@ export default function BookingForm() {
   const handleFrequencyChange = (event) => {
     setFrequency(event.target.value);
   };
+
+  // const TimeSlotSelector = ({ timeSlots, selectedTimeSlot, handleStartTimeChange }) => {
+  //   return (
+  //       <ToggleButtonGroup
+  //           value={selectedTimeSlot}
+  //           exclusive
+  //           onChange={(event, newTimeSlot) => handleStartTimeChange(newTimeSlot)}
+  //           aria-label="time slot"
+  //       >
+  //           {timeSlots.map((slot, index) => (
+  //               <ToggleButton key={index} value={slot} aria-label={slot}>
+  //                   {slot}
+  //               </ToggleButton>
+  //           ))}
+  //       </ToggleButtonGroup>
+  //   );
+  // };
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const TimeSlotSelector = ({
+    timeSlots,
+    selectedTimeSlot,
+    handleStartTimeChange,
+  }) => {
+    return (
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Typography>Select a time slot:</Typography>
+        </Grid>
+        <Grid container item xs={12} spacing={2}>
+          {timeSlots.length > 0 ? (
+            timeSlots.map((slot, index) => (
+              <Grid key={index} item xs={4}>
+                <ToggleButtonGroup
+                  value={selectedTimeSlot}
+                  exclusive
+                  onChange={(event, newTimeSlot) =>
+                    handleStartTimeChange(newTimeSlot)
+                  }
+                  aria-label="time slot"
+                  fullWidth
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    "& .MuiToggleButtonGroup-grouped": {
+                      margin: "5px",
+                      width: "100%", // Ensures the button fills the grid item
+                      "&.Mui-selected": {
+                        backgroundColor: focusedColor, // Selected state background color
+                        color: "#fff", // Selected state text color
+                        "&:hover": {
+                          backgroundColor: focusedColor, // Maintain color on hover
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton
+                    value={slot}
+                    aria-label={slot}
+                    sx={{ padding: "10px", borderRadius: "4px" }}
+                  >
+                    {slot}
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12} style={{ textAlign: "center" }}>
+              <Typography>No available time slots.</Typography>
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
+    );
+  };
+
   const steps = [
     "Choose day and time",
     "Add your information",
@@ -529,7 +608,11 @@ export default function BookingForm() {
           root: {
             backgroundColor: "#FFFFFF",
             color: "#8C52FF",
-            "&:hover": {
+            "&&:hover": {
+              backgroundColor: focusedColor,
+              color: "#FFFFFF",
+            },
+            "&&.Mui-selected": {
               backgroundColor: focusedColor,
               color: "#FFFFFF",
             },
@@ -578,9 +661,9 @@ export default function BookingForm() {
       MuiPickersDay: {
         styleOverrides: {
           root: {
-            "&&:hover": {
-              backgroundColor: focusedColor,
-            },
+            // "&&:hover": {
+            //   backgroundColor: focusedColor,
+            // },
             "&&.Mui-selected": {
               backgroundColor: focusedColor,
               color: "#fff",
@@ -695,19 +778,20 @@ export default function BookingForm() {
                         }}
                       >
                         {/* <Typography>Select a time slot:</Typography> */}
-                        <Grid
+                        {/* <Grid
                           container
                           spacing={2}
                           justifyContent="center"
                           alignItems="center"
-                        >
-                          <Grid item xs={12} style={{ textAlign: "center" }}>
-                            <Typography>Select a time slot:</Typography>
-                            {timeSlots.length > 0 ? (
+                        > */}
+                        {/* <Grid item xs={12} style={{ textAlign: "center" }}> */}
+                        {/* <Typography>Select a time slot:</Typography> */}
+                        {/* {timeSlots.length > 0 ? (
                               timeSlots.map((slot, index) => (
                                 <Button
                                   key={index}
                                   variant="outlined"
+                                  sx={{}}
                                   style={{ margin: 2 }}
                                   onClick={() => handleStartTimeChange(slot)}
                                 >
@@ -716,9 +800,15 @@ export default function BookingForm() {
                               ))
                             ) : (
                               <Typography>No available time slots.</Typography>
-                            )}
-                          </Grid>
-                        </Grid>
+                            )} */}
+
+                        <TimeSlotSelector
+                          timeSlots={timeSlots}
+                          selectedTimeSlot={selectedTimeSlot}
+                          handleStartTimeChange={handleStartTimeChange}
+                        />
+                        {/* </Grid> */}
+                        {/* </Grid> */}
                       </Grid>
                       {error && !isDayPicked && (
                         <Typography variant="caption" color="error">

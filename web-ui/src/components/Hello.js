@@ -100,7 +100,7 @@ export default function Hello() {
             }}
           >
             <Typography variant="h3" color="white" sx={{ fontWeight: 'bold', mb: 2 }}>
-            Elevate Your Clean With A Touch Of Purple
+            Elevate Your Space With A Touch Of Purple
             </Typography>
             {/* <Typography variant="subtitle1" color="white" sx={{ mb: 1 }}>
               Phone number: TBD
