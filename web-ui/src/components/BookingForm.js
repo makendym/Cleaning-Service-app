@@ -1,38 +1,42 @@
-import React, { useEffect, useState } from "react";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import React, {useEffect, useState} from "react";
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  InputLabel,
+  MenuItem,
+  Select,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Stack,
+  Chip,
+  ToggleButton,
+  ToggleButtonGroup,
+  createTheme,
+  ThemeProvider,
+} from "@mui/material";
+import {LocalizationProvider, DateCalendar} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
-import { useMutation } from "@apollo/client";
-// import { CREATE_BOOKING_MUTATION } from "../graphql";
-import { Stack, Chip } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import emailjs from "@emailjs/browser";
-import { useLocation } from "react-router-dom";
-import { AVAILABILITY_QUERY } from "../graphql";
+import {useLocation} from "react-router-dom";
+import {useQuery, useMutation} from "@apollo/client";
 import {
+  AVAILABILITY_QUERY,
   CREATE_APPOINTMENT_MUTATION,
   CREATE_CLIENT_MUTATION,
 } from "../graphql";
-import { useQuery } from "@apollo/client";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 const names = [
   "Laundry wash and dry + Folding ",
@@ -50,26 +54,10 @@ const names = [
 ];
 const focusedColor = "#8C52FF";
 
-// const Containers = styled.div`
-//   width: 475px;
-//   margin: 1em auto;
-//   padding: 1em;
-//   background-color: #fff;
-//   color: #8c52ff;
-//   border: 1px solid #f0f0f0;
-//   border-radius: 10px;
-//   text-align: center;
-//   box-shadow: 0 2px 4px #00000018;
-//   @media (max-width: 520px) {
-//     width: 100%;
-//   }
-// `;
-
 export default function BookingForm() {
   const location = useLocation();
-  const [date, setDate] = useState(null);
-  const [startTime, setStartTime] = useState("");
-  // const [packages, setPackage] = useState(location.state.name || "Regular");
+  const [date, setDate] = useState(dayjs());
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [activeStep, setActiveStep] = React.useState(0);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -96,56 +84,28 @@ export default function BookingForm() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [createdClientId, setCreatedClientId] = useState(null);
   const [createClient] = useMutation(CREATE_CLIENT_MUTATION);
+  const [dayTimeSlots] = useState([]);
+  const [frequency, setFrequency] = useState("");
 
   const {
     data,
     loading: availabilityLoading,
     error: availabilityError,
   } = useQuery(AVAILABILITY_QUERY, {
-    variables: { date: date ? dayjs(date).startOf("day").toISOString() : "" },
-    skip: !date, // Skip the query if date is null
+    variables: {date: date ? dayjs(date).startOf("day").toISOString() : ""},
+    skip: !date,
     fetchPolicy: "network-only",
   });
-  const [dayTimeSlots] = useState([]);
-  const [frequency, setFrequency] = React.useState("");
 
-  // useEffect(() => {
-  //   console.log(data);
-  //   if (data && !availabilityLoading && !availabilityError) {
-  //     // Initialize an array of 7 elements for each day of the week
-  //     const schedule = Array(7).fill(null);
 
-  //     // Populate the array with timeSlots for each dayOfWeek
-  //     data.availability.forEach(({ dayOfWeek, timeSlots }) => {
-  //       schedule[dayOfWeek] = timeSlots || []; // Use an empty array for days with no time slots
-  //     });
-
-  //     console.log(schedule);
-  //     setDayTimeSlots(schedule);
-  //   }
-  // }, [data, availabilityLoading, availabilityError]);
-
-  // useEffect(() => {
-  //   console.log(data);
-  //   if (data && !availabilityLoading && !availabilityError) {
-  //     // Assuming `data.availability` is structured as shown in your response
-  //     const updatedSchedule = data.availability.reduce((acc, curr) => {
-  //       acc[curr.dayOfWeek] = curr.timeSlots || [];
-  //       return acc;
-  //     }, Array(7).fill([]));
-
-  //     console.log(updatedSchedule);
-  //     setDayTimeSlots(updatedSchedule);
-  //   }
-  // }, [data, availabilityLoading, availabilityError]);
   useEffect(() => {
-    if (data && !availabilityLoading && !availabilityError) {
+    if (activeStep === 0 && date && data && !availabilityLoading && !availabilityError) {
       // Directly set the timeSlots for the selected date
       const slotsForSelectedDay =
         data.availability.length > 0 ? data.availability[0].timeSlots : [];
       setTimeSlots(slotsForSelectedDay);
     }
-  }, [data, availabilityLoading, availabilityError]);
+  }, [data, date,  availabilityLoading, availabilityError, activeStep]);
 
   const handleDateChange = (newDate) => {
     setDate(newDate);
@@ -161,7 +121,6 @@ export default function BookingForm() {
 
   const handleStartTimeChange = (time) => {
     setSelectedTimeSlot(time);
-    setStartTime(time);
     const selectedDateTime = date.format("MMM DD, YYYY") + " " + time;
     console.log("Selected Date and Time:", selectedDateTime);
     setIsTimePicked(true);
@@ -171,37 +130,34 @@ export default function BookingForm() {
     setFrequency(event.target.value);
   };
 
-  // const TimeSlotSelector = ({ timeSlots, selectedTimeSlot, handleStartTimeChange }) => {
-  //   return (
-  //       <ToggleButtonGroup
-  //           value={selectedTimeSlot}
-  //           exclusive
-  //           onChange={(event, newTimeSlot) => handleStartTimeChange(newTimeSlot)}
-  //           aria-label="time slot"
-  //       >
-  //           {timeSlots.map((slot, index) => (
-  //               <ToggleButton key={index} value={slot} aria-label={slot}>
-  //                   {slot}
-  //               </ToggleButton>
-  //           ))}
-  //       </ToggleButtonGroup>
-  //   );
-  // };
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const TimeSlotSelector = ({
     timeSlots,
     selectedTimeSlot,
     handleStartTimeChange,
   }) => {
     return (
-      <Grid container spacing={2} justifyContent="center" alignItems="center">
-        <Grid item xs={12} style={{ textAlign: "center" }}>
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center">
+        <Grid
+          item
+          xs={12}
+          style={{textAlign: "center"}}>
           <Typography>Select a time slot:</Typography>
         </Grid>
-        <Grid container item xs={12} spacing={2}>
+        <Grid
+          container
+          item
+          xs={12}
+          spacing={2}>
           {timeSlots.length > 0 ? (
             timeSlots.map((slot, index) => (
-              <Grid key={index} item xs={4}>
+              <Grid
+                key={index}
+                item
+                xs={4}>
                 <ToggleButtonGroup
                   value={selectedTimeSlot}
                   exclusive
@@ -224,20 +180,21 @@ export default function BookingForm() {
                         },
                       },
                     },
-                  }}
-                >
+                  }}>
                   <ToggleButton
                     value={slot}
                     aria-label={slot}
-                    sx={{ padding: "10px", borderRadius: "4px" }}
-                  >
+                    sx={{padding: "10px", borderRadius: "4px"}}>
                     {slot}
                   </ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
             ))
           ) : (
-            <Grid item xs={12} style={{ textAlign: "center" }}>
+            <Grid
+              item
+              xs={12}
+              style={{textAlign: "center"}}>
               <Typography>No available time slots.</Typography>
             </Grid>
           )}
@@ -257,7 +214,7 @@ export default function BookingForm() {
     if (!createdClientId) {
       // Check if client hasn't been created yet
       try {
-        const { data } = await createClient({
+        const {data} = await createClient({
           variables: {
             client: {
               first_name: firstName,
@@ -400,10 +357,14 @@ export default function BookingForm() {
         process.env.REACT_APP_EMAILJS_SERVICE_ID,
         process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
         {
-          from_name: "Cleaning Services",
+          from_name: "PurpleGlow Cleaning Services",
           to_name: `${firstName + " " + lastName}`,
           from_email: "makendymidouin99@gmail.com",
           to_email: email,
+          service_type: service,
+          scheduled_date: dayjs(date).format('MMMM D, YYYY'),
+          scheduled_time: selectedTimeSlot,
+          service_address: `${address}, ${city}, ${state} ${zip}`,
           message:
             "Your booking has been confirmed! Thank you for booking with us.",
         },
@@ -434,14 +395,10 @@ export default function BookingForm() {
   };
 
   const handleSubmit = async () => {
-    // Prepare the appointment data
-
     // Assuming `date` is a Dayjs object
     const formattedDate = dayjs(date).format("YYYY-MM-DD");
-
     // Convert startTime from 12-hour format to 24-hour format
-    const time24hr = convertTo24Hour(startTime);
-
+    const time24hr = convertTo24Hour(selectedTimeSlot);
     // Combine date and time into an ISO 8601 DateTime string
     const appointmentDateTime = dayjs(`${formattedDate}T${time24hr}:00.000Z`);
 
@@ -476,7 +433,7 @@ export default function BookingForm() {
       );
       // Reset form state and handle post-creation logic here
       setDate(null);
-      setStartTime("");
+      setSelectedTimeSlot(null);
       setService("");
       setType("");
       setFirstName("");
@@ -495,7 +452,7 @@ export default function BookingForm() {
       setPets("");
       setAddOns([]);
       setNotes("");
-      setStartTime("");
+      setFrequency("");
       setBookingSubmitted(true);
 
       handleEmailConfirmation();
@@ -505,85 +462,6 @@ export default function BookingForm() {
       // Properly handle the error scenario, possibly updating the UI to inform the user
     }
   };
-
-  // const handleSubmit = async () => {
-  //   const bookingData = {
-  //     createdAt: new Date(),
-  //     first_name: firstName,
-  //     last_name: lastName,
-  //     email: email,
-  //     phone_number: phoneNumber,
-  //     booking_date: date ? date.startOf("day").toDate() : null,
-  //     booking_time: startTime,
-  //     address: address,
-  //     city: city,
-  //     state: state,
-  //     zip: zip,
-  //     package: service,
-  //     bedrooms: parseInt(bedrooms, 10),
-  //     bathrooms: parseInt(bathrooms, 10),
-  //     kitchen: kitchen,
-  //     supplies: supplies,
-  //     kindOfPet: kindOfPet,
-  //     add_ons: addOns,
-  //     notes: notes,
-  //   };
-
-  //   const appointmentVariables = {
-  //     appointment: {
-  //       employee_created: "65f44d59832646270adaf864", // Replace with the actual employee ID
-  //       client_id: createdClientId,
-  //       client_name: `${firstName} ${lastName}`,
-  //       contact: email,
-  //       bedrooms: parseInt(bedrooms, 10),
-  //       bathrooms: parseInt(bathrooms, 10),
-  //       kitchen: kitchen,
-  //       supplies: supplies,
-  //       kindOfPet: kindOfPet,
-  //       add_ons: addOns,
-  //       notes: notes,
-  //       // Ensure other required fields are included here
-  //     },
-  //   };
-  //   try {
-  //     const {
-  //       data: { createBooking },
-  //     } = await createAppointment({
-  //       variables: {
-  //         booking: appointmentVariables,
-  //       },
-  //     });
-
-  //     console.log("Created Booking:", createBooking);
-  //     setDate(null);
-  //     setStartTime("");
-  //     setService("");
-  //     setType("");
-  //     setFirstName("");
-  //     setLastName("");
-  //     setAddress("");
-  //     setCity("");
-  //     setState("");
-  //     setEmail("");
-  //     setPhoneNumber("");
-  //     setBathrooms("");
-  //     setBedrooms("");
-  //     setZip("");
-  //     setKitchen("");
-  //     setSupplies("");
-  //     setKindOfPet("");
-  //     setPets("");
-  //     setAddOns([]);
-  //     setNotes("");
-
-  //     setBookingSubmitted(true);
-
-  //     handleEmailConfirmation();
-  //     console.log("Email confirmation sent!");
-  //   } catch (e) {
-  //     console.error("Error creating booking:", e);
-  //   }
-  // };
 
   // Define your custom theme
   const theme = createTheme({
@@ -661,9 +539,6 @@ export default function BookingForm() {
       MuiPickersDay: {
         styleOverrides: {
           root: {
-            // "&&:hover": {
-            //   backgroundColor: focusedColor,
-            // },
             "&&.Mui-selected": {
               backgroundColor: focusedColor,
               color: "#fff",
@@ -686,8 +561,7 @@ export default function BookingForm() {
         <Container
           component="main"
           maxWidth="xs"
-          style={{ paddingBottom: "50px" }}
-        >
+          style={{paddingBottom: "50px"}}>
           <CssBaseline />
           <Box
             sx={{
@@ -695,39 +569,28 @@ export default function BookingForm() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "#8C52FF" }}>
+            }}>
+            <Avatar sx={{m: 1, bgcolor: "#8C52FF"}}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography
+              component="h1"
+              variant="h5">
               Book Now
             </Typography>
 
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{width: "100%"}}>
               <Stepper
                 activeStep={activeStep}
-                sx={{ paddingBottom: "20px", paddingTop: "20px" }}
-              >
+                sx={{paddingBottom: "20px", paddingTop: "20px"}}>
                 {steps.map((label, index) => {
                   const stepProps = {};
                   const labelProps = {};
                   return (
-                    <Step key={label} {...stepProps}>
-                      <StepLabel
-                        {...labelProps}
-                        StepIconProps={
-                          {
-                            // classes: {
-                            //   root: "custom-step-icon",
-                            //   active: "custom-step-icon-active",
-                            //   completed: "custom-step-icon-completed",
-                            // },
-                          }
-                        }
-                      >
-                        {label}
-                      </StepLabel>
+                    <Step
+                      key={label}
+                      {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
                     </Step>
                   );
                 })}
@@ -737,8 +600,7 @@ export default function BookingForm() {
                   <Box
                     display="flex"
                     justifyContent="center"
-                    alignItems="center"
-                  >
+                    alignItems="center">
                     <Grid
                       container
                       spacing={2}
@@ -747,8 +609,7 @@ export default function BookingForm() {
                       sx={{
                         paddingBottom: "20px",
                         paddingTop: "20px",
-                      }}
-                    >
+                      }}>
                       <Grid
                         item
                         xs={12} // Adjust this to fit the entire row for the header and calendar
@@ -757,8 +618,7 @@ export default function BookingForm() {
                           flexDirection: "column",
                           alignItems: "center", // Center horizontally
                           justifyContent: "center", // Center vertically
-                        }}
-                      >
+                        }}>
                         <Typography>Pick a Day and Time</Typography>
                         <DateCalendar
                           value={date}
@@ -775,48 +635,24 @@ export default function BookingForm() {
                           flexDirection: "column",
                           alignItems: "center", // Center horizontally
                           justifyContent: "center", // Center vertically
-                        }}
-                      >
-                        {/* <Typography>Select a time slot:</Typography> */}
-                        {/* <Grid
-                          container
-                          spacing={2}
-                          justifyContent="center"
-                          alignItems="center"
-                        > */}
-                        {/* <Grid item xs={12} style={{ textAlign: "center" }}> */}
-                        {/* <Typography>Select a time slot:</Typography> */}
-                        {/* {timeSlots.length > 0 ? (
-                              timeSlots.map((slot, index) => (
-                                <Button
-                                  key={index}
-                                  variant="outlined"
-                                  sx={{}}
-                                  style={{ margin: 2 }}
-                                  onClick={() => handleStartTimeChange(slot)}
-                                >
-                                  {slot}
-                                </Button>
-                              ))
-                            ) : (
-                              <Typography>No available time slots.</Typography>
-                            )} */}
-
+                        }}>
                         <TimeSlotSelector
                           timeSlots={timeSlots}
                           selectedTimeSlot={selectedTimeSlot}
                           handleStartTimeChange={handleStartTimeChange}
                         />
-                        {/* </Grid> */}
-                        {/* </Grid> */}
                       </Grid>
                       {error && !isDayPicked && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please pick a day before proceeding.
                         </Typography>
                       )}
                       {error && !isTimePicked && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please pick a time before proceeding.
                         </Typography>
                       )}
@@ -830,9 +666,11 @@ export default function BookingForm() {
                   <Grid
                     container
                     spacing={2}
-                    sx={{ paddingBottom: "20px", paddingTop: "20px" }}
-                  >
-                    <Grid item xs={12} sm={6}>
+                    sx={{paddingBottom: "20px", paddingTop: "20px"}}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <TextField
                         name="firstName"
                         required
@@ -845,12 +683,17 @@ export default function BookingForm() {
                         onChange={(e) => setFirstName(e.target.value)}
                       />
                       {error && firstName === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your first name.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <TextField
                         required
                         fullWidth
@@ -862,12 +705,16 @@ export default function BookingForm() {
                         onChange={(e) => setLastName(e.target.value)}
                       />
                       {error && lastName === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your last name.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <TextField
                         required
                         fullWidth
@@ -879,12 +726,16 @@ export default function BookingForm() {
                         onChange={(e) => setEmail(e.target.value)}
                       />
                       {error && email === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your email.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <TextField
                         required
                         fullWidth
@@ -897,12 +748,16 @@ export default function BookingForm() {
                         onChange={(e) => setPhoneNumber(e.target.value)}
                       />
                       {error && phoneNumber === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your phone number.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <TextField
                         required
                         fullWidth
@@ -914,12 +769,17 @@ export default function BookingForm() {
                         onChange={(e) => setAddress(e.target.value)}
                       />
                       {error && address === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your address.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <TextField
                         required
                         fullWidth
@@ -931,12 +791,17 @@ export default function BookingForm() {
                         onChange={(e) => setCity(e.target.value)}
                       />
                       {error && city === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your city.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <TextField
                         required
                         fullWidth
@@ -948,12 +813,16 @@ export default function BookingForm() {
                         onChange={(e) => setState(e.target.value)}
                       />
                       {error && state === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your state.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <TextField
                         required
                         fullWidth
@@ -965,7 +834,9 @@ export default function BookingForm() {
                         onChange={(e) => setZip(e.target.value)}
                       />
                       {error && zip === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter your zip code.
                         </Typography>
                       )}
@@ -979,9 +850,10 @@ export default function BookingForm() {
                   <Grid
                     container
                     spacing={2}
-                    sx={{ paddingBottom: "20px", paddingTop: "20px" }}
-                  >
-                    <Grid item xs={12}>
+                    sx={{paddingBottom: "20px", paddingTop: "20px"}}>
+                    <Grid
+                      item
+                      xs={12}>
                       <InputLabel id="demo-simple-select-label">
                         Choose a service
                       </InputLabel>
@@ -990,8 +862,7 @@ export default function BookingForm() {
                         value={service}
                         onChange={handleServiceChange}
                         variant="outlined"
-                        fullWidth
-                      >
+                        fullWidth>
                         <MenuItem value={"Home cleaning"}>
                           Home cleaning
                         </MenuItem>
@@ -1000,12 +871,16 @@ export default function BookingForm() {
                         </MenuItem>
                       </Select>
                       {error && service === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please choose a service.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <InputLabel id="demo-simple-select-label">
                         Type of service
                       </InputLabel>
@@ -1014,41 +889,48 @@ export default function BookingForm() {
                         value={type}
                         onChange={(e) => setType(e.target.value)}
                         variant="outlined"
-                        fullWidth
-                      >
+                        fullWidth>
                         {service === "Home cleaning" && [
                           <MenuItem
                             key="Regular home cleaning"
-                            value="Regular home cleaning"
-                          >
+                            value="Regular home cleaning">
                             Regular home cleaning
                           </MenuItem>,
-                          <MenuItem key="Deep cleaning" value="Deep cleaning">
+                          <MenuItem
+                            key="Deep cleaning"
+                            value="Deep cleaning">
                             Deep cleaning
                           </MenuItem>,
                           <MenuItem
                             key="Move in/out cleaning"
-                            value="Move in/out cleaning"
-                          >
+                            value="Move in/out cleaning">
                             Move in/out cleaning
                           </MenuItem>,
                         ]}
                         {service === "Rental Properties Cleaning" && [
-                          <MenuItem key="Basic cleaning" value="Basic cleaning">
+                          <MenuItem
+                            key="Basic cleaning"
+                            value="Basic cleaning">
                             Basic cleaning
                           </MenuItem>,
-                          <MenuItem key="Deep cleaning" value="Deep cleaning">
+                          <MenuItem
+                            key="Deep cleaning"
+                            value="Deep cleaning">
                             Deep cleaning
                           </MenuItem>,
                         ]}
                       </Select>
                       {error && type === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please choose a type.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <InputLabel id="frequency-radio-group-label">
                         Frequency
                       </InputLabel>
@@ -1058,7 +940,20 @@ export default function BookingForm() {
                         value={frequency}
                         onChange={handleFrequencyChange}
                         name="frequency-radio-group"
-                      >
+                        sx={{
+                          "& .MuiRadio-root": {
+                            color: focusedColor, // Default color
+                            "&.Mui-checked": {
+                              color: focusedColor, // Color when the radio is checked
+                            },
+                            "&:hover": {
+                              backgroundColor: "rgba(140, 82, 255, 0.04)", // Slight hover effect, optional
+                            },
+                          },
+                          "& .MuiFormControlLabel-label": {
+                            color: "text.primary", // Ensures the label color matches your theme
+                          },
+                        }}>
                         <FormControlLabel
                           value="oneTime"
                           control={<Radio />}
@@ -1087,7 +982,10 @@ export default function BookingForm() {
                       </RadioGroup>
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <InputLabel> Number of bedrooms</InputLabel>
                       <TextField
                         required
@@ -1110,7 +1008,10 @@ export default function BookingForm() {
                         onChange={(e) => setBedrooms(e.target.value)}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <InputLabel> Number of bathrooms</InputLabel>
                       <TextField
                         required
@@ -1134,7 +1035,10 @@ export default function BookingForm() {
                         onChange={(e) => setBathrooms(e.target.value)}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <InputLabel id="demo-simple-select-label">
                         Type of Kitchen
                       </InputLabel>
@@ -1145,18 +1049,22 @@ export default function BookingForm() {
                         value={kitchen}
                         onChange={handleKitchenChange}
                         variant="outlined"
-                        fullWidth
-                      >
+                        fullWidth>
                         <MenuItem value={"Kosher"}>Kosher</MenuItem>
                         <MenuItem value={"Non Kosher"}>Non Kosher</MenuItem>
                       </Select>
                       {error && kitchen === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter an option.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}>
                       <InputLabel id="demo-simple-select-label">
                         Any pets?
                       </InputLabel>
@@ -1167,14 +1075,15 @@ export default function BookingForm() {
                         value={pets}
                         onChange={handlePetsChange}
                         variant="outlined"
-                        fullWidth
-                      >
+                        fullWidth>
                         <MenuItem value={"Dog"}>Dog</MenuItem>
                         <MenuItem value={"Cat"}>Cat</MenuItem>
                         <MenuItem value={"Other"}>Other</MenuItem>
                       </Select>
                       {error && pets === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter an option.
                         </Typography>
                       )}
@@ -1196,7 +1105,9 @@ export default function BookingForm() {
                         />
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <InputLabel id="demo-simple-select-label">
                         Have Supplies?
                       </InputLabel>
@@ -1207,18 +1118,21 @@ export default function BookingForm() {
                         value={supplies}
                         onChange={handleSuppliesChange}
                         variant="outlined"
-                        fullWidth
-                      >
+                        fullWidth>
                         <MenuItem value={"yes"}>Yes</MenuItem>
                         <MenuItem value={"no"}>No</MenuItem>
                       </Select>
                       {error && supplies === "" && (
-                        <Typography variant="caption" color="error">
+                        <Typography
+                          variant="caption"
+                          color="error">
                           Please enter an option.
                         </Typography>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <InputLabel> Add-ons</InputLabel>
                       <Select
                         multiple
@@ -1227,7 +1141,10 @@ export default function BookingForm() {
                         variant="outlined"
                         fullWidth
                         renderValue={(selected) => (
-                          <Stack gap={1} direction="row" flexWrap="wrap">
+                          <Stack
+                            gap={1}
+                            direction="row"
+                            flexWrap="wrap">
                             {selected.map((value) => (
                               <Chip
                                 key={value}
@@ -1244,19 +1161,50 @@ export default function BookingForm() {
                                     }
                                   />
                                 }
+                                sx={{
+                                  backgroundColor: `${focusedColor}22`, // Faint color using alpha value
+                                  "&:hover": {
+                                    backgroundColor: `${focusedColor}44`, // Slightly darker on hover
+                                  },
+                                }}
                               />
                             ))}
                           </Stack>
                         )}
-                      >
+                        MenuProps={{
+                          PaperProps: {
+                            sx: {
+                              "& .MuiMenuItem-root": {
+                                "&.Mui-selected, &.Mui-selected:hover": {
+                                  backgroundColor: focusedColor, // Background color when selected
+                                  color: "#fff", // Text color when selected
+                                },
+                                "&:hover": {
+                                  backgroundColor: `${focusedColor}AA`, // Background color on hover
+                                  color: "#fff", // Text color on hover
+                                },
+                              },
+                            },
+                          },
+                        }}>
                         {names.map((name) => (
-                          <MenuItem key={name} value={name}>
+                          <MenuItem
+                            key={name}
+                            value={name}
+                            sx={{
+                              "&.Mui-selected": {
+                                backgroundColor: focusedColor, // Ensure the selected item maintains the focused color
+                                color: "#fff",
+                              },
+                            }}>
                             {name}
                           </MenuItem>
                         ))}
                       </Select>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                      item
+                      xs={12}>
                       <InputLabel> Notes</InputLabel>
                       <TextField
                         placeholder="Leave detailed instructions"
@@ -1285,15 +1233,18 @@ export default function BookingForm() {
                       justifyContent: "center",
                       flexDirection: "column",
                       alignItems: "center",
-                    }}
-                  >
-                    <Typography variant="h6" gutterBottom>
+                    }}>
+                    <Typography
+                      variant="h6"
+                      gutterBottom>
                       Thank you for your booking!
                     </Typography>
                     <Typography variant="subtitle1">
                       We have received your booking details.
                     </Typography>
-                    <Button style={{ marginTop: "20px" }} onClick={handleReset}>
+                    <Button
+                      style={{marginTop: "20px"}}
+                      onClick={handleReset}>
                       Book Again
                     </Button>
                   </Grid>
@@ -1301,21 +1252,22 @@ export default function BookingForm() {
               )}
 
               {!bookingSubmitted && activeStep !== steps.length && (
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Box sx={{display: "flex", flexDirection: "row", pt: 2}}>
                   <React.Fragment>
                     <Button
                       color="inherit"
                       disabled={activeStep === 0}
                       onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
+                      sx={{mr: 1}}>
                       Back
                     </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
+                    <Box sx={{flex: "1 1 auto"}} />
                   </React.Fragment>
 
                   {activeStep === steps.length - 1 ? (
-                    <Button onClick={finalStep} disabled={bookingSubmitted}>
+                    <Button
+                      onClick={finalStep}
+                      disabled={bookingSubmitted}>
                       Book Appointment
                     </Button>
                   ) : (
