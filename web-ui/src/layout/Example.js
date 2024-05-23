@@ -14,8 +14,10 @@ import {
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
+import InstagramIcon from '@mui/icons-material/Instagram';
 import {Link} from "react-router-dom";
 
+const focusedColor = "#8C52FF";
 // #CE6CE6 - purple
 const customTheme = createTheme({
   typography: {
@@ -48,7 +50,7 @@ export default function Example() {
 
   const phoneNumber = "+13477545156";
   const emailAddress = "contact.purpleglow.cleaning@gmail.com";
-
+  const instagram = "https://www.instagram.com/purpleglow.cleaning";
   const handleScroll = () => {
     const scrollTop = window.scrollY;
     if (scrollTop === 0) {
@@ -75,7 +77,8 @@ export default function Example() {
         borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
         backgroundColor: isTransparent ? "" : "rgba(255, 255, 255, 0.9)", // Using state to change background color
         padding: "10px 20px 10px",
-        transition: 'background-color 0.3s' // Smooth transition for background color change
+        transition: 'background-color 0.3s', // Smooth transition for background color change
+        borderRadius: "0px 0px 0px 0px"
       }}>
         <Toolbar disableGutters>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
@@ -96,18 +99,23 @@ export default function Example() {
             </Grid>
             <Grid item xs={6} md={8} container justifyContent="flex-end" spacing={2}>
               <Grid item>
-                <IconButton href={`tel:${phoneNumber}`} color="inherit">
+                <IconButton href={`tel:${phoneNumber}`} color="inherit" sx={{color: focusedColor}}>
                   <PhoneIcon />
                 </IconButton>
               </Grid>
               <Grid item>
-                <IconButton href={`mailto:${emailAddress}`} color="inherit">
+                <IconButton href={`mailto:${emailAddress}`} color="inherit" sx={{color: focusedColor}}>
                   <EmailIcon />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <IconButton href={instagram} color="inherit" sx={{color: focusedColor}}>
+                  <InstagramIcon />
                 </IconButton>
               </Grid>
               <Grid item sx={{ display: { xs: 'none', md: 'block' } }}>
                 {location.pathname !== "/bookingForm" && (
-                  <Button onClick={BookingPage} variant="outlined" sx={{ color: "#8C52FF", borderColor: "#8C52FF" }}>
+                  <Button onClick={BookingPage} variant="outlined" sx={{ color:focusedColor, borderColor: focusedColor }}>
                     Book Now
                   </Button>
                 )}
