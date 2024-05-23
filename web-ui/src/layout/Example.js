@@ -6,7 +6,6 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Box,
   Button,
   CssBaseline,
   createTheme,
@@ -74,8 +73,9 @@ export default function Example() {
         top: 0,
         zIndex: 100,
         borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        padding: "10px 20px 10px"
+        backgroundColor: isTransparent ? "" : "rgba(255, 255, 255, 0.9)", // Using state to change background color
+        padding: "10px 20px 10px",
+        transition: 'background-color 0.3s' // Smooth transition for background color change
       }}>
         <Toolbar disableGutters>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
