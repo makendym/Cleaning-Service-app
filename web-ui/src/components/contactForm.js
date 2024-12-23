@@ -21,6 +21,8 @@ function ContactForm() {
           root: {
             backgroundColor: "#FFFFFF",
             color: "#8C52FF",
+            fontWeight: "bold",
+            padding: "10px 22px",
             "&:hover": {
               backgroundColor: focusedColor,
               color: "#FFFFFF",
@@ -31,22 +33,24 @@ function ContactForm() {
       MuiTextField: {
         styleOverrides: {
           root: {
-            // Input label when focused
             "& label.Mui-focused": {
               color: focusedColor,
             },
-            // Focused color for input with variant='standard'
             "& .MuiInput-underline:after": {
               borderBottomColor: focusedColor,
             },
-            // Focused color for input with variant='filled'
             "& .MuiFilledInput-underline:after": {
               borderBottomColor: focusedColor,
             },
-            // Focused color for input with variant='outlined'
             "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderRadius: 20, // Apply borderRadius to all states
+              },
+              "&:hover fieldset": {
+                borderColor: focusedColor, // Change border color on hover
+              },
               "&.Mui-focused fieldset": {
-                borderColor: focusedColor,
+                borderColor: focusedColor, // Change border color when focused
               },
             },
           },
@@ -92,10 +96,10 @@ function ContactForm() {
           justifyContent: "center",
           backgroundColor: "#f5f5f5", // Light grey background
           padding: 3,
-          borderRadius: 2,
+          borderRadius: 5,
           boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
           maxWidth: "500px",
-          margin: "auto",
+          margin: "50px 0 50px 0",
           width: "100%",
         }}
       >
@@ -105,7 +109,7 @@ function ContactForm() {
           sx={{
             fontFamily: "League Spartan, sans-serif",
             fontWeight: "bold", // Assuming you want the bold weight; adjust as necessary
-            marginBottom: "8px", // gutterBottom equivalent, adjust the value as needed
+            margin: "20px", // gutterBottom equivalent, adjust the value as needed
             color: "text.primary", // Use theme's color
           }}
           gutterBottom
@@ -120,7 +124,7 @@ function ContactForm() {
           noValidate
           sx={{ mt: 1, width: "100%" }} // Ensure the form takes the full width of the container
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={3} sx={{marginBottom: "20px"}}>
             <Grid item xs={12}>
               <TextField
                 autoComplete="fname"
@@ -173,6 +177,8 @@ function ContactForm() {
               color: "white",
               mt: 2,
               textTransform: "none",
+              width: '50%',
+              borderRadius: "20px"
             }}
             size="large"
             disabled={loading}

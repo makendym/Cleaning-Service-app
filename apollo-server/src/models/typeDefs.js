@@ -15,7 +15,7 @@ export const typeDefs = gql`
     services: [Service]
     servicesProvided: [ServiceProvided]
     servicesBooked: [ServiceBooked]
-    availability(date: String!): [Availability]
+    availability(date: String!, expectedDuration: Float!): [Availability]
   }
 
   type Book {

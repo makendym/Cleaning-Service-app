@@ -1,16 +1,23 @@
 {
   "dependencies": {
-    "@apollo/server": "^4.7.5",
+    "@apollo/server": "^4.11.2",
     "apollo-server-express": "^3.13.0",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
-    "express": "^4.18.3",
-    "googleapis": "^123.0.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "googleapis": "^144.0.0",
+    "graphql": "^16.10.0",
     "graphql-tag": "^2.12.6",
-    "mongoose": "^7.3.2"
+    "mongoose": "^8.9.2",
+    "morgan": "^1.10.0",
+    "square": "^39.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.8",
-    "@babel/node": "^7.22.6"
+    "@babel/core": "^7.26.0",
+    "@babel/node": "^7.26.0"
   },
   "scripts": {
     "start": "nodemon --exec babel-node --presets='@babel/preset-env' -- src/index.js"

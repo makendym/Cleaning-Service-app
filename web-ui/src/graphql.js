@@ -135,8 +135,8 @@ export const BOOKINGS_QUERY = gql`
 `;
 
 export const AVAILABILITY_QUERY = gql`
-  query Availability($date: String!) {
-    availability(date: $date) {
+  query Availability($date: String!, $expectedDuration: Float!) {
+    availability(date: $date, expectedDuration: $expectedDuration) {
       dayOfWeek
       timeSlots
     }
