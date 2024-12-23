@@ -10,7 +10,7 @@ const client = new ApolloClient({
   //"/.netlify/functions/graphql"
   //LocalGraphQL
   //"http://localhost:4000/graphql"
-  uri: "http://localhost:4000/graphql",
+  uri: "/.netlify/functions/graphql",
   cache: new InMemoryCache(),
 });
 const TEST_QUERY = gql`
